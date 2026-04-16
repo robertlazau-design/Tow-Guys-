@@ -637,7 +637,7 @@ export default function App() {
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       {/* Header */}
-      <header className="sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 bg-[var(--bg)]/80 dark:bg-black/90 backdrop-blur-md transition-colors duration-500">
+      <header className="sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 bg-white text-black dark:bg-[#0a0a0a] dark:text-white backdrop-blur-md transition-colors duration-500">
         <div 
           className="flex items-center gap-3 cursor-pointer" 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -887,7 +887,7 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 bg-[#0a0a0a] text-white dark:bg-black border-t border-[var(--border)] transition-colors duration-500 relative z-10">
+      <footer className="p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 bg-white text-black dark:bg-[#0a0a0a] dark:text-white border-t border-[var(--border)] transition-colors duration-500 relative z-10">
         <div>
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img src="/logo.png" alt="Tow Guys Logo" className="h-14 md:h-20 w-auto object-contain transition-transform hover:scale-105 duration-300 dark:invert dark:hue-rotate-180" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
@@ -898,19 +898,19 @@ export default function App() {
             <p>Gresham, OR 97080</p>
           </div>
           <div className="flex gap-4">
-            <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
               <span className="font-mono text-[10px] uppercase font-bold tracking-wider">Licensed & Insured</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10">
               <span className="font-mono text-[10px] uppercase font-bold tracking-wider">★ 5-Star Rated</span>
             </div>
           </div>
           <div className="flex gap-3 mt-6">
-            <a href="https://www.instagram.com/towguysgresham" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#E1306C] hover:border-[#E1306C] text-white transition-all group" aria-label="Instagram">
+            <a href="https://www.instagram.com/towguysgresham" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center hover:bg-[#E1306C] hover:border-[#E1306C] text-black dark:text-white hover:text-white transition-all group" aria-label="Instagram">
               <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
             </a>
-            <a href="https://www.facebook.com/TowGuysPortland" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:border-[#1877F2] text-white transition-all group" aria-label="Facebook">
+            <a href="https://www.facebook.com/TowGuysPortland" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:border-[#1877F2] text-black dark:text-white hover:text-white transition-all group" aria-label="Facebook">
               <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
             </a>
           </div>
@@ -929,11 +929,11 @@ export default function App() {
           >
             (971) 222-7994
           </motion.a>
-          <div className="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-mono text-[10px] opacity-40 uppercase tracking-widest">
+          <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-mono text-[10px] opacity-40 uppercase tracking-widest">
             <p>© {new Date().getFullYear()} Tow Guys LLC. All rights reserved.</p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-black/70 dark:hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-black/70 dark:hover:text-white transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
