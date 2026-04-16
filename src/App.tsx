@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 const Marquee = ({ text }: { text: string }) => {
@@ -113,6 +113,188 @@ const PhoneNumber = () => {
   );
 };
 
+const JunkCarQuoteFlow = () => {
+  const [step, setStep] = useState(0);
+  const [details, setDetails] = useState({ year: '', make: '', model: '' });
+  const [photos, setPhotos] = useState<{ front: string | null; side: string | null; damage: string | null }>({
+    front: null,
+    side: null,
+    damage: null
+  });
+
+  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>, view: 'front' | 'side' | 'damage') => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+      setPhotos(prev => ({ ...prev, [view]: url }));
+    }
+  };
+
+  const submitQuote = () => {
+    const formData = new FormData();
+    formData.append('year', details.year);
+    formData.append('make', details.make);
+    formData.append('model', details.model);
+    formData.append('front', photos.front || '');
+    formData.append('side', photos.side || '');
+    formData.append('damage', photos.damage || '');
+    console.log("Submitting quote:", formData);
+    setStep(6);
+  };
+
+  if (step === 0) {
+    return (
+      <motion.div layoutId="junk-car-card" className="bg-[var(--orange)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg h-full border border-transparent">
+        <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+          <Banknote className="w-32 h-32" />
+        </div>
+        <div className="relative z-10 font-sans">
+          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
+            <Banknote className="w-6 h-6 text-white" />
+          </div>
+          <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Sell Junk Car<br/>For Cash</h4>
+          <p className="font-mono text-sm text-white/80">Get an instant quote by uploading 3 photos.</p>
+        </div>
+        <button 
+          onClick={() => setStep(1)}
+          className="relative z-10 w-full bg-black text-white rounded-full py-4 font-bold text-sm uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg">
+          Get Quote
+        </button>
+      </motion.div>
+    );
+  }
+
+  const isDetailsComplete = details.year && details.make && details.model;
+
+  return (
+    <motion.div layoutId="junk-car-card" className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden md:col-span-2 shadow-[0_0_40px_rgba(255,85,0,0.1)] border border-[var(--orange)]/30 font-sans min-h-[400px]">
+      <button onClick={() => setStep(0)} className="absolute top-6 left-6 text-white/50 hover:text-white transition-colors z-20 flex items-center gap-2">
+        <ArrowLeft className="w-5 h-5" />
+        <span className="font-mono text-xs uppercase tracking-widest hidden sm:block">Cancel</span>
+      </button>
+
+      <div className="w-full max-w-md relative z-10 flex flex-col h-full justify-center">
+        <AnimatePresence mode="wait">
+          
+          {step === 1 && (
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full">
+              <div className="text-center mb-4">
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Vehicle Details</h3>
+                <p className="font-mono text-white/60 text-sm">Step 1 of 4</p>
+              </div>
+              <input type="text" placeholder="Year" value={details.year} onChange={e => setDetails({...details, year: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--orange)] transition-colors" />
+              <input type="text" placeholder="Make (e.g. Honda)" value={details.make} onChange={e => setDetails({...details, make: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--orange)] transition-colors" />
+              <input type="text" placeholder="Model (e.g. Civic)" value={details.model} onChange={e => setDetails({...details, model: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--orange)] transition-colors" />
+              <button 
+                disabled={!isDetailsComplete}
+                onClick={() => setStep(2)}
+                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${isDetailsComplete ? 'bg-[var(--orange)] text-white hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20'}`}>
+                Next Step
+              </button>
+            </motion.div>
+          )}
+
+          {[2, 3, 4].includes(step) && (
+            <motion.div key={`step${step}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 items-center text-center w-full">
+              <div className="mb-4">
+                <h3 className="font-display font-bold text-3xl text-white mb-2">
+                  {step === 2 ? 'Front View' : step === 3 ? 'Side View' : 'Damage / Interior'}
+                </h3>
+                <p className="font-mono text-white/60 text-sm">Step {step} of 4</p>
+              </div>
+
+              {((step === 2 && photos.front) || (step === 3 && photos.side) || (step === 4 && photos.damage)) ? (
+                <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden relative border-2 border-[var(--orange)] shadow-lg bg-black">
+                  <img src={step === 2 ? photos.front! : step === 3 ? photos.side! : photos.damage!} alt="Preview" className="w-full h-full object-contain" />
+                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black to-transparent flex justify-center">
+                    <label htmlFor={`photo-${step}`} className="cursor-pointer bg-black/50 backdrop-blur px-6 py-3 rounded-full text-white font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-black transition-colors">
+                      <Camera className="w-4 h-4" /> Retake
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <label htmlFor={`photo-${step}`} className="w-full aspect-[4/3] bg-white/5 hover:bg-white/10 border-2 border-dashed border-white/20 rounded-3xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-colors group">
+                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-[var(--orange)]">
+                    <Camera className="w-10 h-10 text-white/50 group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-xl text-white/50 group-hover:text-white">Tap to Open Camera</span>
+                </label>
+              )}
+              
+              <input 
+                id={`photo-${step}`}
+                type="file" 
+                accept="image/*" 
+                capture="environment" 
+                onChange={(e) => handlePhotoCapture(e, step === 2 ? 'front' : step === 3 ? 'side' : 'damage')}
+                className="hidden" 
+              />
+
+              <button 
+                disabled={!(step === 2 ? photos.front : step === 3 ? photos.side : photos.damage)}
+                onClick={() => setStep(step + 1)}
+                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${
+                  (step === 2 && photos.front) || (step === 3 && photos.side) || (step === 4 && photos.damage) 
+                    ? 'bg-[var(--orange)] text-white hover:scale-105 active:scale-95' 
+                    : 'bg-white/5 text-white/20'}`}>
+                {step === 4 ? 'Review Quote' : 'Next Step'}
+              </button>
+            </motion.div>
+          )}
+
+          {step === 5 && (
+            <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full text-center">
+              <div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Review & Submit</h3>
+                <p className="font-mono text-white/60 text-sm uppercase">{details.year} {details.make} {details.model}</p>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <div className="aspect-square rounded-2xl overflow-hidden relative bg-black">
+                  <img src={photos.front!} className="object-cover w-full h-full" alt="Front" />
+                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur rounded px-2 py-1 text-[8px] font-mono font-bold text-white uppercase tracking-widest">Front</div>
+                </div>
+                <div className="aspect-square rounded-2xl overflow-hidden relative bg-black">
+                  <img src={photos.side!} className="object-cover w-full h-full" alt="Side" />
+                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur rounded px-2 py-1 text-[8px] font-mono font-bold text-white uppercase tracking-widest">Side</div>
+                </div>
+                <div className="aspect-square rounded-2xl overflow-hidden relative bg-black">
+                  <img src={photos.damage!} className="object-cover w-full h-full" alt="Damage" />
+                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur rounded px-2 py-1 text-[8px] font-mono font-bold text-white uppercase tracking-widest">Damage</div>
+                </div>
+              </div>
+
+              <button 
+                onClick={submitQuote}
+                className="w-full h-16 rounded-2xl bg-[var(--orange)] text-white font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all mt-4 flex items-center justify-center gap-3">
+                <Upload className="w-5 h-5" /> Submit For Instant Quote
+              </button>
+            </motion.div>
+          )}
+
+          {step === 6 && (
+            <motion.div key="step6" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center gap-6 w-full py-8">
+              <div className="w-24 h-24 bg-[#00ff88]/20 rounded-full flex items-center justify-center text-[#00ff88] mb-2">
+                <CheckCircle2 className="w-12 h-12" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Quote Requested!</h3>
+                <p className="font-mono text-white/60 text-sm max-w-[250px] mx-auto">We're reviewing your photos. You'll receive an instant cash offer momentarily.</p>
+              </div>
+              <button 
+                onClick={() => setStep(0)}
+                className="w-full h-16 rounded-2xl bg-white/10 text-white font-bold uppercase tracking-wider hover:bg-white/20 transition-all mt-4">
+                Done
+              </button>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
 const RecoveryHub = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -211,22 +393,8 @@ const RecoveryHub = () => {
                   </button>
                 </div>
 
-                {/* Option D: Sell Junk Car */}
-                <div className="bg-[var(--orange)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group">
-                  <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
-                    <Banknote className="w-32 h-32" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-                      <Banknote className="w-6 h-6 text-white" />
-                    </div>
-                    <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Sell Junk Car<br/>For Cash</h4>
-                    <p className="font-mono text-sm text-white/80">Get an instant quote by uploading 3 photos.</p>
-                  </div>
-                  <button className="relative z-10 w-full bg-black text-white rounded-full py-4 font-bold text-sm uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg">
-                    Get Quote
-                  </button>
-                </div>
+                {/* Option D: Sell Junk Car with Native Wizard */}
+                <JunkCarQuoteFlow />
 
                 {/* Option B: Checklist */}
                 <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col gap-6">
