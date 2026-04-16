@@ -17,7 +17,7 @@
     --pulse-color: rgba(0, 85, 255, 0.5);
   }
   
-  .emergency {
+  .dark {
     --bg: #0a0a0a;
     --fg: #ffffff;
     --border: rgba(255, 255, 255, 0.15);

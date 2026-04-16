@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook } from 'lucide-react';
+import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 const Marquee = ({ text }: { text: string }) => {
@@ -309,10 +309,10 @@ const HeroGallery = () => {
 };
 
 export default function App() {
-  const [isEmergency, setIsEmergency] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
-    <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isEmergency ? 'emergency' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
+    <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
       {/* Noise Texture Overlay */}
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
@@ -330,15 +330,15 @@ export default function App() {
         </div>
         
         <button 
-          onClick={() => setIsEmergency(!isEmergency)}
+          onClick={() => setIsDarkMode(!isDarkMode)}
           className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
-            isEmergency 
+            isDarkMode 
               ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]' 
               : 'bg-[var(--bg)] text-[var(--fg)] border-[var(--border)] hover:bg-[var(--blue)] hover:text-white hover:border-[var(--blue)]'
           }`}
         >
-          <Power className="w-3 h-3" />
-          {isEmergency ? 'Standby' : 'Dispatch Mode'}
+          {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
         </button>
       </header>
 
@@ -382,8 +382,8 @@ export default function App() {
               Stranded? Tap here to find your location and get help fast.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
-              <OneClickDispatch className="bg-[var(--blue)] text-white px-8 py-4 text-lg hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] emergency:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none" />
-              <a href="tel:9712227994" className="flex items-center gap-2 px-8 py-4 text-lg font-display font-bold uppercase tracking-wider border border-[var(--border)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-colors shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] emergency:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none">
+              <OneClickDispatch className="bg-[var(--blue)] text-white px-8 py-4 text-lg hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none" />
+              <a href="tel:9712227994" className="flex items-center gap-2 px-8 py-4 text-lg font-display font-bold uppercase tracking-wider border border-[var(--border)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-colors shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none">
                 <Phone className="w-5 h-5" />
                 Call Now
               </a>
