@@ -351,24 +351,18 @@ export default function App() {
 
       {/* Hero Section */}
       <section className="relative border-b border-[var(--border)] flex flex-col overflow-hidden">
-        {/* Background Grid */}
-        <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6 pointer-events-none z-0">
-          {[
-            "/images/tow1.jpg",
-            "/images/tow2.jpg",
-            "/images/tow3.jpg",
-            "/images/tow4.jpg",
-            "/images/tow5.jpg",
-            "/images/tow6.jpg"
-          ].map((src, i) => (
-            <div key={i} className={`relative border-r border-[var(--border)] transition-colors duration-500 overflow-hidden ${i >= 4 ? 'hidden md:block' : ''}`}>
-              <img 
-                src={src} 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale mix-blend-luminosity"
-              />
-            </div>
-          ))}
+        {/* Background Image & Grid Lines */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <img 
+            src="/images/hero-bg.jpg" 
+            alt="" 
+            className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale mix-blend-luminosity"
+          />
+          <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className={`border-r border-[var(--border)] transition-colors duration-500 ${i >= 4 ? 'hidden md:block' : ''}`} />
+            ))}
+          </div>
         </div>
 
         <div className="p-4 md:p-6 relative z-10 flex-1 flex flex-col justify-center py-12 md:py-24">
@@ -484,7 +478,7 @@ export default function App() {
 
       {/* Reviews Section */}
       <section className="border-b border-[var(--border)] bg-[#0a0a0a] text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605664041952-4a2855d9363b?q=80&w=2000&auto=format&fit=crop')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[url('/images/reviews-bg.jpg')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
         <div className="p-6 md:p-12 max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
             <div>
