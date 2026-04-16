@@ -479,7 +479,7 @@ const RecoveryHub = () => {
   return (
     <>
       {/* Main Entry Button */}
-      <div className="border-t border-[var(--border)] bg-[#0a0a0a] text-white relative z-10">
+      <div className="border-t border-[var(--border)] bg-gray-100 text-black dark:bg-[#0a0a0a] dark:text-white relative z-10">
         <button 
           onClick={() => setIsOpen(true)}
           className="w-full text-left p-8 md:p-16 hover:bg-[var(--blue)] transition-colors duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
@@ -488,7 +488,7 @@ const RecoveryHub = () => {
             <h2 className="font-display font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-2 group-hover:text-white transition-colors">
               Vehicle Recovery & Junk Car Hub
             </h2>
-            <p className="font-mono text-sm md:text-base text-white/60 group-hover:text-white/90 transition-colors">
+            <p className="font-mono text-sm md:text-base text-black/60 dark:text-white/60 group-hover:text-white/90 transition-colors">
               Options for picking up, releasing, or selling a vehicle.
             </p>
           </div>
