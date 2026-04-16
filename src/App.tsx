@@ -88,19 +88,19 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
         {dispatchState === 'idle' && (
           <motion.div key="idle" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
             <MapPin className="w-5 h-5" />
-            <span>Tap to Send Location & Get Help</span>
+            <span>Send My Location</span>
           </motion.div>
         )}
         {dispatchState === 'locating' && (
           <motion.div key="locating" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2 text-white">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Generating GPS Link...</span>
+            <span>Locating...</span>
           </motion.div>
         )}
         {dispatchState === 'success' && (
           <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 1.1, opacity: 0 }} className="flex items-center gap-2 text-[#00ff88]">
             <CheckCircle2 className="w-5 h-5" />
-            <span>Location Secured!</span>
+            <span>GPS Locked.</span>
           </motion.div>
         )}
       </AnimatePresence>
