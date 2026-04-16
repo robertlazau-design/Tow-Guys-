@@ -25,11 +25,25 @@ const Marquee = ({ text }: { text: string }) => {
 };
 
 const OneClickDispatch = ({ className = "", isPulse = false }: { className?: string, isPulse?: boolean }) => {
-  const [isLocating, setIsLocating] = useState(false);
+  const [dispatchState, setDispatchState] = useState<'idle' | 'locating' | 'success'>('idle');
 
   const handleDispatch = () => {
+    if (dispatchState !== 'idle') return;
+
     const phoneNumber = "+19712227994";
+    const triggerSMS = (mapsLink: string) => {
+      const message = `I need a tow! My exact location is: ${mapsLink}`;
+      // Handle iOS vs Android SMS URI formatting
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const separator = isIOS ? '&' : '?';
+      window.location.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(message)}`;
+      
+      // Reset state after a brief delay so it's ready if they navigate back
+      setTimeout(() => setDispatchState('idle'), 3000);
+    };
+
     const fallbackCall = () => {
+      setDispatchState('idle'); // fail gracefully, reset
       window.location.href = `tel:${phoneNumber}`;
     };
 
@@ -38,24 +52,19 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
       return;
     }
 
-    setIsLocating(true);
+    setDispatchState('locating');
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setIsLocating(false);
         const { latitude, longitude } = position.coords;
         const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
-        const message = `I need a tow! My exact location is: ${mapsLink}`;
         
-        // Handle iOS vs Android SMS URI formatting
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        const separator = isIOS ? '&' : '?';
-        
-        window.location.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(message)}`;
+        // Brief success state before redirect
+        setDispatchState('success');
+        setTimeout(() => triggerSMS(mapsLink), 1000);
       },
       (error) => {
         console.warn("Geolocation failed or denied:", error);
-        setIsLocating(false);
         fallbackCall(); // Graceful fallback to phone call
       },
       {
@@ -66,23 +75,35 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
     );
   };
 
+  // Merge the passed className with our new base aesthetics (massive, rounded-2xl)
+  const baseClassName = `min-h-[60px] rounded-2xl flex items-center justify-center gap-3 font-display font-bold uppercase tracking-wider transition-all duration-500 disabled:opacity-90 disabled:cursor-wait relative overflow-hidden ${isPulse ? 'pulse-button' : ''}`;
+  
   return (
     <button 
       onClick={handleDispatch}
-      disabled={isLocating}
-      className={`flex items-center justify-center gap-3 font-display font-bold uppercase tracking-wider transition-colors duration-500 disabled:opacity-80 disabled:cursor-not-allowed ${isPulse ? 'pulse-button' : ''} ${className}`}
+      disabled={dispatchState !== 'idle'}
+      className={`${baseClassName} ${className}`}
     >
-      {isLocating ? (
-        <>
-          <Loader2 className="w-5 h-5 animate-spin" />
-          Locating...
-        </>
-      ) : (
-        <>
-          <Crosshair className="w-5 h-5" />
-          1-Click Dispatch
-        </>
-      )}
+      <AnimatePresence mode="wait">
+        {dispatchState === 'idle' && (
+          <motion.div key="idle" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
+            <MapPin className="w-5 h-5" />
+            <span>Tap to Send Location & Get Help</span>
+          </motion.div>
+        )}
+        {dispatchState === 'locating' && (
+          <motion.div key="locating" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2 text-white">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span>Generating GPS Link...</span>
+          </motion.div>
+        )}
+        {dispatchState === 'success' && (
+          <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 1.1, opacity: 0 }} className="flex items-center gap-2 text-[#00ff88]">
+            <CheckCircle2 className="w-5 h-5" />
+            <span>Location Secured!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </button>
   );
 };
