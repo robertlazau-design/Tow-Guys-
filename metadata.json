@@ -1,0 +1,8 @@
+{
+  "name": "Tow Guys LLC",
+  "description": "24/7 Towing and Roadside Assistance in Gresham, OR",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}
