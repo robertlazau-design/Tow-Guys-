@@ -518,9 +518,11 @@ export default function App() {
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
 
       {/* Hero Section */}
-      <section className="relative border-b border-[var(--border)] flex flex-col overflow-hidden">
-        {/* Background Image & Grid Lines */}
-        <div className="absolute inset-0 pointer-events-none z-0">
+      <section className="flex flex-col border-b border-[var(--border)]">
+        {/* Hero Banner Area */}
+        <div className="relative flex flex-col overflow-hidden">
+          {/* Background Image & Grid Lines */}
+          <div className="absolute inset-0 pointer-events-none z-0">
           <img 
             src="/images/hero-bg.jpg" 
             alt="" 
@@ -556,6 +558,7 @@ export default function App() {
               </a>
             </div>
           </div>
+        </div>
         </div>
 
         {/* Recovery & Junk Car Hub */}
