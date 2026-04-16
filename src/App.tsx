@@ -645,7 +645,7 @@ export default function App() {
           tabIndex={0}
           aria-label="Scroll to top"
         >
-          <img src="/logo.png" alt="Tow Guys Logo" className="h-8 md:h-10 object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+          <img src="/logo.png" alt="Tow Guys Logo" className="h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105 duration-300" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
           <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
         </div>
         
@@ -890,7 +890,7 @@ export default function App() {
       <footer className="p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 bg-[var(--fg)] text-[var(--bg)] transition-colors duration-500 relative z-10">
         <div>
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/logo.png" alt="Tow Guys Logo" className="h-10 md:h-12 object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <img src="/logo.png" alt="Tow Guys Logo" className="h-14 md:h-20 w-auto object-contain transition-transform hover:scale-105 duration-300" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
             <span className="hidden font-display font-bold uppercase tracking-widest text-xl">Tow Guys</span>
           </div>
           <div className="font-mono text-sm opacity-60 space-y-1 mb-6">
