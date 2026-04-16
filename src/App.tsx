@@ -1,6 +1,230 @@
-import React, { useState, useEffect } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload, MessageSquare, IdCard, PenTool } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
+import SignatureCanvas from 'react-signature-canvas';
+
+const DigitalReleaseForm = () => {
+  const [step, setStep] = useState(0);
+  const [details, setDetails] = useState({ yearMakeModelPlate: '', authorizedPerson: '' });
+  const [idPhoto, setIdPhoto] = useState<string | null>(null);
+  const sigPad = useRef<SignatureCanvas>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIdPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const submitForm = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const signatureBase64 = sigPad.current?.getTrimmedCanvas().toDataURL('image/png') || '';
+      
+      const res = await fetch('/api/send-release', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          vehicleDetails: details.yearMakeModelPlate,
+          proxyName: details.authorizedPerson,
+          ownerIdBase64: idPhoto,
+          signatureBase64: signatureBase64
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to submit release form. Please try again.');
+      }
+      
+      setStep(4); // Success step
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const clearSignature = () => {
+    sigPad.current?.clear();
+  };
+
+  if (step === 0) {
+    return (
+      <motion.div layoutId="digital-release-card" className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg h-full border border-transparent">
+        <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+          <FileSignature className="w-32 h-32" />
+        </div>
+        <div className="relative z-10 font-sans">
+          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
+            <FileSignature className="w-6 h-6 text-white" />
+          </div>
+          <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
+          <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle.</p>
+        </div>
+        <button 
+          onClick={() => setStep(1)}
+          className="relative z-10 w-full bg-white text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg">
+          Digital Release Form
+        </button>
+      </motion.div>
+    );
+  }
+
+  const isDetailsComplete = details.yearMakeModelPlate && details.authorizedPerson;
+
+  return (
+    <motion.div layoutId="digital-release-card" className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden md:col-span-2 shadow-[0_0_40px_rgba(0,102,255,0.1)] border border-[var(--blue)]/30 font-sans min-h-[400px]">
+      <button onClick={() => setStep(0)} className="absolute top-6 left-6 text-white/50 hover:text-white transition-colors z-20 flex items-center gap-2">
+        <ArrowLeft className="w-5 h-5" />
+        <span className="font-mono text-xs uppercase tracking-widest hidden sm:block">Cancel</span>
+      </button>
+
+      <div className="w-full max-w-md relative z-10 flex flex-col h-full justify-center">
+        <AnimatePresence mode="wait">
+          
+          {step === 1 && (
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full mt-8">
+              <div className="text-center mb-4">
+                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
+                  <Car className="w-6 h-6 text-[var(--blue)]" />
+                </div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Vehicle & Authorization</h3>
+                <p className="font-mono text-white/60 text-sm">Step 1 of 3</p>
+              </div>
+              <input type="text" placeholder="Year, Make, Model, License Plate" value={details.yearMakeModelPlate} onChange={e => setDetails({...details, yearMakeModelPlate: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--blue)] transition-colors" />
+              <input type="text" placeholder="Pickup Person's Full Legal Name" value={details.authorizedPerson} onChange={e => setDetails({...details, authorizedPerson: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--blue)] transition-colors" />
+              <button 
+                disabled={!isDetailsComplete}
+                onClick={() => setStep(2)}
+                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${isDetailsComplete ? 'bg-[var(--blue)] text-white hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20'}`}>
+                Next Step
+              </button>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 items-center text-center w-full mt-8">
+              <div className="mb-4">
+                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
+                  <IdCard className="w-6 h-6 text-[var(--blue)]" />
+                </div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Owner's Photo ID</h3>
+                <p className="font-mono text-white/60 text-sm">Step 2 of 3</p>
+              </div>
+
+              {idPhoto ? (
+                <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden relative border-2 border-[var(--blue)] shadow-lg bg-black">
+                  <img src={idPhoto} alt="Owner ID Preview" className="w-full h-full object-contain" />
+                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black to-transparent flex justify-center">
+                    <label htmlFor="photo-id" className="cursor-pointer bg-black/50 backdrop-blur px-6 py-3 rounded-full text-white font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-black transition-colors">
+                      <Camera className="w-4 h-4" /> Retake
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <label htmlFor="photo-id" className="w-full aspect-[4/3] bg-white/5 hover:bg-white/10 border-2 border-dashed border-white/20 rounded-3xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-colors group">
+                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-[var(--blue)]">
+                    <Camera className="w-10 h-10 text-white/50 group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-xl text-white/50 group-hover:text-white">Tap to Capture ID</span>
+                </label>
+              )}
+              
+              <input 
+                id="photo-id"
+                type="file" 
+                accept="image/*" 
+                capture="environment" 
+                onChange={handlePhotoCapture}
+                className="hidden" 
+              />
+
+              <button 
+                disabled={!idPhoto}
+                onClick={() => setStep(3)}
+                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${idPhoto ? 'bg-[var(--blue)] text-white hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20'}`}>
+                Next Step
+              </button>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full mt-8 text-center">
+              <div>
+                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
+                  <PenTool className="w-6 h-6 text-[var(--blue)]" />
+                </div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Signature</h3>
+                <p className="font-mono text-white/60 text-sm">Step 3 of 3</p>
+              </div>
+              
+              <div className="bg-[#2a2a2a] border border-white/20 rounded-2xl overflow-hidden relative">
+                <SignatureCanvas 
+                  ref={sigPad}
+                  penColor="white"
+                  canvasProps={{ className: 'w-full h-48 sm:h-56 signature-canvas cursor-crosshair' }} 
+                />
+                <button onClick={clearSignature} className="absolute top-2 right-2 px-3 py-1 bg-black/40 hover:bg-black/80 rounded backdrop-blur text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-widest transition-colors">
+                  Clear Signature
+                </button>
+              </div>
+
+              <p className="text-white/40 font-mono text-xs text-center max-w-[300px] mx-auto mt-2">
+                By signing, I authorize {details.authorizedPerson} to pick up the vehicle.
+              </p>
+
+              {error && <p className="text-red-400 font-mono text-xs text-center mt-2">{error}</p>}
+
+              <button 
+                onClick={submitForm}
+                disabled={isSubmitting}
+                className="w-full h-16 rounded-2xl bg-[var(--blue)] text-white font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all mt-4 flex items-center justify-center gap-3 disabled:opacity-75 disabled:scale-100 disabled:cursor-not-allowed">
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Sending...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-5 h-5" /> Submit Release
+                  </>
+                )}
+              </button>
+            </motion.div>
+          )}
+
+          {step === 4 && (
+            <motion.div key="step4" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center gap-6 w-full py-8 mt-8">
+              <div className="w-24 h-24 bg-[#00ff88]/20 rounded-full flex items-center justify-center text-[#00ff88] mb-2 shadow-[0_0_30px_rgba(0,255,136,0.3)]">
+                <CheckCircle2 className="w-12 h-12" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-3xl text-white mb-2">Release Authorized!</h3>
+                <p className="font-mono text-white/60 text-sm max-w-[280px] mx-auto">
+                  Your vehicle release has been securely submitted. {details.authorizedPerson} may now pick up the vehicle with their matching ID.
+                </p>
+              </div>
+              <button 
+                onClick={() => setStep(0)}
+                className="w-full h-16 rounded-2xl bg-white/10 text-white font-bold uppercase tracking-wider hover:bg-white/20 transition-all mt-4">
+                Done
+              </button>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
 
 const Marquee = ({ text }: { text: string }) => {
   const content = [...Array(5)].map((_, i) => (
@@ -317,21 +541,7 @@ const RecoveryHub = () => {
               <div className="p-6 md:p-8 pt-2 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 bg-[#0f0f0f]">
                 
                 {/* Option A: Release Form */}
-                <div className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group">
-                  <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
-                    <FileSignature className="w-32 h-32" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-                      <FileSignature className="w-6 h-6 text-white" />
-                    </div>
-                    <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
-                    <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle.</p>
-                  </div>
-                  <button className="relative z-10 w-full bg-white text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg">
-                    Digital Release Form
-                  </button>
-                </div>
+                <DigitalReleaseForm />
 
                 {/* Option D: Sell Junk Car with Native Wizard */}
                 <JunkCarQuoteFlow />
