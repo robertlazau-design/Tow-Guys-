@@ -352,18 +352,11 @@ export default function App() {
       {/* Hero Section */}
       <section className="relative border-b border-[var(--border)] flex flex-col overflow-hidden">
         {/* Background Image & Grid Lines */}
-        <div className="absolute inset-0 pointer-events-none z-0 bg-[var(--bg)]">
-          {/* Blurred Backdrop for Mobile */}
+        <div className="absolute inset-0 pointer-events-none z-0">
           <img 
             src="/images/hero-bg.jpg" 
             alt="" 
-            className="absolute inset-0 w-full h-full object-cover opacity-20 blur-xl grayscale"
-          />
-          {/* Main uncropped image */}
-          <img 
-            src="/images/hero-bg.jpg" 
-            alt="" 
-            className="absolute inset-0 w-full h-full object-contain md:object-cover md:object-center opacity-30 grayscale mix-blend-luminosity"
+            className="absolute inset-0 w-full h-full object-cover object-bottom opacity-30 grayscale mix-blend-luminosity"
           />
           <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6">
             {[...Array(6)].map((_, i) => (
