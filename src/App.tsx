@@ -569,7 +569,7 @@ export default function App() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--orange)]"></span>
               </span>
-              Stranded? Tap here to find your location and get help fast.
+              Need a tow? Tap to instantly text your location to our dispatch team.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <OneClickDispatch className="bg-[var(--blue)] text-white px-8 py-4 text-lg hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none" />
@@ -820,7 +820,7 @@ export default function App() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--orange)]"></span>
           </span>
-          Stranded? Tap here to find your location and get help fast.
+          Need a tow? Tap to instantly text your location to our dispatch team.
         </p>
         <div className="flex gap-3">
           <a 
