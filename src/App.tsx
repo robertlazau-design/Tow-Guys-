@@ -131,11 +131,9 @@ const DigitalReleaseForm = () => {
                   </div>
                 </div>
               ) : (
-                <label htmlFor="photo-id" className="w-full aspect-[4/3] bg-white/5 hover:bg-white/10 border-2 border-dashed border-white/20 rounded-3xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-colors group">
-                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-[var(--blue)]">
-                    <Camera className="w-10 h-10 text-white/50 group-hover:text-white" />
-                  </div>
-                  <span className="font-bold text-xl text-white/50 group-hover:text-white">Tap to Capture ID</span>
+                <label htmlFor="photo-id" className="w-full h-20 rounded-2xl bg-[var(--blue)] flex items-center justify-center gap-3 cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all text-white font-bold uppercase tracking-wider text-base md:text-lg">
+                  <Camera className="w-6 h-6" />
+                  Tap to Snap or Upload ID
                 </label>
               )}
               
@@ -143,7 +141,6 @@ const DigitalReleaseForm = () => {
                 id="photo-id"
                 type="file" 
                 accept="image/*" 
-                capture="environment" 
                 onChange={handlePhotoCapture}
                 className="hidden" 
               />
