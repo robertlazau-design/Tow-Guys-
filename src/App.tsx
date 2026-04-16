@@ -149,8 +149,13 @@ const RecoveryHub = () => {
               Options for picking up, releasing, or selling a vehicle.
             </p>
           </div>
-          <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-[var(--blue)] transition-all shrink-0">
-            <Crosshair className="w-6 h-6" />
+          <div className="flex items-center gap-4 bg-white/5 group-hover:bg-white/20 px-6 py-3 rounded-full border border-white/10 transition-all duration-300">
+            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white/80 group-hover:text-white">
+              View Options
+            </span>
+            <div className="w-8 h-8 bg-white/10 group-hover:bg-white rounded-full flex items-center justify-center group-hover:text-[var(--blue)] transition-colors">
+              <Crosshair className="w-4 h-4" />
+            </div>
           </div>
         </button>
       </div>
