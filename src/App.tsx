@@ -353,12 +353,12 @@ export default function App() {
         {/* Background Grid */}
         <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6 pointer-events-none z-0">
           {[
-            "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1532974492646-bdf5bfd24c71?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=800&auto=format&fit=crop"
+            "/images/tow1.jpg",
+            "/images/tow2.jpg",
+            "/images/tow3.jpg",
+            "/images/tow4.jpg",
+            "/images/tow5.jpg",
+            "/images/tow6.jpg"
           ].map((src, i) => (
             <div key={i} className={`relative border-r border-[var(--border)] transition-colors duration-500 overflow-hidden ${i >= 4 ? 'hidden md:block' : ''}`}>
               <img 
