@@ -374,12 +374,12 @@ const RecoveryHub = () => {
                     </div>
                   </div>
                   <div className="flex gap-3 mt-auto">
-                    <button className="flex-1 bg-black text-white rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+                    <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=28901%20SE%20Dodge%20Park%20Blvd%2C%20Gresham%2C%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-black text-white rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
                       Uber
-                    </button>
-                    <button className="flex-1 bg-[#FF00BF]/10 text-[#FF00BF] rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-[#FF00BF]/20 transition-colors flex justify-center items-center gap-2">
+                    </a>
+                    <a href="https://ride.lyft.com/app?destination[address]=28901%20SE%20Dodge%20Park%20Blvd,%20Gresham,%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#FF00BF]/10 text-[#FF00BF] rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-[#FF00BF]/20 transition-colors flex justify-center items-center gap-2">
                       Lyft
-                    </button>
+                    </a>
                   </div>
                 </div>
 
