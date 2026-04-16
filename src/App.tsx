@@ -281,11 +281,7 @@ const RecoveryHub = () => {
 
 const HeroGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = [
-    "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?q=80&w=2070&auto=format&fit=crop", // Tow truck
-    "https://images.unsplash.com/photo-1532974492646-bdf5bfd24c71?q=80&w=2070&auto=format&fit=crop", // Recovery
-    "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?q=80&w=2072&auto=format&fit=crop"  // Roadside
-  ];
+  const images = Array.from({ length: 13 }, (_, i) => `/gallery/gallery${i + 1}.jpg`);
 
   useEffect(() => {
     const timer = setInterval(() => {
