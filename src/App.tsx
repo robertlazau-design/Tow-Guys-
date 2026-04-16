@@ -547,7 +547,7 @@ export default function App() {
           <img 
             src="/images/hero-bg.jpg" 
             alt="" 
-            className="absolute inset-0 w-full h-full object-cover object-bottom opacity-30 grayscale mix-blend-luminosity"
+            className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center opacity-30 grayscale mix-blend-luminosity"
           />
           <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6">
             {[...Array(6)].map((_, i) => (
