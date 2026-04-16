@@ -71,9 +71,9 @@ const DigitalReleaseForm = () => {
           <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle.</p>
         </div>
         <button 
-          onClick={() => setStep(1)}
-          className="relative z-10 w-full bg-white text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg">
-          Digital Release Form
+          disabled
+          className="relative z-10 w-full bg-white/40 text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider opacity-70 cursor-not-allowed shadow-lg">
+          Coming Soon
         </button>
       </motion.div>
     );
