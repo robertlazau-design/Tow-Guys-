@@ -699,7 +699,10 @@ export default function App() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <OneClickDispatch className="bg-[var(--blue)] text-white px-8 py-4 text-lg hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none" />
-              <a href="tel:9712227994" className="flex items-center gap-2 px-8 py-4 text-lg font-display font-bold uppercase tracking-wider border border-[var(--border)] hover:bg-[var(--fg)] hover:text-[var(--bg)] transition-colors shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none">
+              <a 
+                href="tel:9712227994" 
+                className={`flex items-center gap-2 px-8 py-4 text-lg font-display font-bold uppercase tracking-wider transition-colors active:translate-y-1 active:shadow-none ${isDarkMode ? 'bg-[#1a1a1a] text-white border border-white/20 hover:bg-white hover:text-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)]' : 'bg-white text-black border border-black/20 hover:bg-black hover:text-white shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)]'}`}
+              >
                 <Phone className="w-5 h-5" />
                 Call Now
               </a>
