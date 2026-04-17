@@ -479,7 +479,7 @@ const RecoveryHub = () => {
   return (
     <>
       {/* Main Entry Button */}
-      <div className="border-t border-[var(--border)] bg-gray-100 text-black dark:bg-[#0a0a0a] dark:text-white relative z-10">
+      <div className={`border-t border-[var(--border)] relative z-10 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-gray-100 text-black'}`}>
         <button 
           onClick={() => setIsOpen(true)}
           className="w-full text-left p-8 md:p-16 hover:bg-[var(--blue)] transition-colors duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
@@ -488,7 +488,7 @@ const RecoveryHub = () => {
             <h2 className="font-display font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-2 group-hover:text-white transition-colors">
               Vehicle Recovery & Junk Car Hub
             </h2>
-            <p className="font-mono text-sm md:text-base text-black/60 dark:text-white/60 group-hover:text-white/90 transition-colors">
+            <p className={`font-mono text-sm md:text-base group-hover:text-white/90 transition-colors ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
               Options for picking up, releasing, or selling a vehicle.
             </p>
           </div>
@@ -637,7 +637,7 @@ export default function App() {
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       {/* Header */}
-      <header className="sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 bg-white text-black dark:bg-[#0a0a0a] dark:text-white backdrop-blur-md transition-colors duration-500">
+      <header className={`sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 backdrop-blur-md transition-colors duration-500 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
         <div 
           className="flex items-center gap-3 cursor-pointer" 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -645,7 +645,7 @@ export default function App() {
           tabIndex={0}
           aria-label="Scroll to top"
         >
-          <img src="/logo.png" alt="Tow Guys Logo" className="h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105 duration-300 dark:invert dark:hue-rotate-180" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+          <img src="/logo.png" alt="Tow Guys Logo" className={`h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105 duration-300 ${isDarkMode ? 'invert hue-rotate-180' : ''}`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
           <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
         </div>
         
@@ -887,10 +887,10 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 bg-white text-black dark:bg-[#0a0a0a] dark:text-white border-t border-[var(--border)] transition-colors duration-500 relative z-10">
+      <footer className={`p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-t border-[var(--border)] transition-colors duration-500 relative z-10 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
         <div>
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/logo.png" alt="Tow Guys Logo" className="h-14 md:h-20 w-auto object-contain transition-transform hover:scale-105 duration-300 dark:invert dark:hue-rotate-180" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <img src="/logo.png" alt="Tow Guys Logo" className={`h-14 md:h-20 w-auto object-contain transition-transform hover:scale-105 duration-300 ${isDarkMode ? 'invert hue-rotate-180' : ''}`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
             <span className="hidden font-display font-bold uppercase tracking-widest text-xl">Tow Guys</span>
           </div>
           <div className="font-mono text-sm opacity-60 space-y-1 mb-6">
