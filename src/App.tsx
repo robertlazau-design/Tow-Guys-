@@ -456,7 +456,7 @@ const JunkCarQuoteFlow = () => {
   );
 };
 
-const RecoveryHub = () => {
+const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -709,7 +709,7 @@ export default function App() {
         </div>
 
         {/* Recovery & Junk Car Hub */}
-        <RecoveryHub />
+        <RecoveryHub isDarkMode={isDarkMode} />
 
         {/* Services Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 border-t border-[var(--border)] relative z-10 bg-[var(--bg)] transition-colors duration-500">
