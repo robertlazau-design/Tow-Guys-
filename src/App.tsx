@@ -620,7 +620,7 @@ const HeroGallery = () => {
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
           src={images[currentIndex]}
-          alt={`Gallery image ${currentIndex + 1}`}
+          alt={`Tow Guys Towing and Recovery in Gresham OR - Gallery image ${currentIndex + 1}`}
           className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700"
         />
       </AnimatePresence>
@@ -633,6 +633,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
+      <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
       {/* Noise Texture Overlay */}
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
