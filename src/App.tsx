@@ -495,12 +495,12 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
               Options for picking up, releasing, or selling a vehicle.
             </p>
           </div>
-          <div className="flex items-center gap-4 bg-white/5 group-hover:bg-white/20 px-6 py-3 rounded-full border border-white/10 transition-all duration-300">
-            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-black dark:text-white group-hover:text-white">
+          <div className="flex items-center gap-4 bg-gray-800 dark:bg-white/15 group-hover:bg-white/20 px-6 py-3 rounded-full border border-transparent dark:border-white/10 transition-all duration-300">
+            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white dark:text-black group-hover:text-white">
               View Options
             </span>
-            <div className="w-8 h-8 bg-white/10 group-hover:bg-white rounded-full flex items-center justify-center group-hover:text-[var(--blue)] transition-colors">
-              <Crosshair className="w-4 h-4" />
+            <div className="w-8 h-8 bg-white/20 dark:bg-black/20 group-hover:bg-white rounded-full flex items-center justify-center group-hover:text-[var(--blue)] transition-colors">
+              <Crosshair className="w-4 h-4 text-white dark:text-black group-hover:text-[var(--blue)]" />
             </div>
           </div>
         </button>
