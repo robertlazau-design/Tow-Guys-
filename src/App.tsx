@@ -886,13 +886,18 @@ export default function App() {
           <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
         </Link>
         
-        <div className="flex items-center gap-4">
-          <Link to="/" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
-            Home
-          </Link>
-          <Link to="/blog" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
-            News & Tips
-          </Link>
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-3 md:gap-4">
+            <Link to="/" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+              Home
+            </Link>
+            <span className={`font-mono text-xs font-light opacity-30 select-none ${isDarkMode ? 'text-white' : 'text-black'}`}>
+              |
+            </span>
+            <Link to="/blog" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+              News & Tips
+            </Link>
+          </div>
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
