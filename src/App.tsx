@@ -71,7 +71,7 @@ const DigitalReleaseForm = () => {
             <FileSignature className="w-6 h-6 text-white" />
           </div>
           <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
-          <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle.</p>
+          <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle or belongings</p>
         </div>
         <button 
           disabled
@@ -539,14 +539,8 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
 
               {/* Bento Grid Content */}
               <div className="p-6 md:p-8 pt-2 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 bg-[#0f0f0f]">
-                
-                {/* Option A: Release Form */}
-                <DigitalReleaseForm />
 
-                {/* Option D: Sell Junk Car with Native Wizard */}
-                <JunkCarQuoteFlow />
-
-                {/* Option B: Checklist */}
+                {/* Position 1 (Top Left): What to Bring */}
                 <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col gap-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
@@ -559,7 +553,7 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
                       "Valid Photo ID (License/Passport)",
                       "Proof of Ownership (Title/Reg)",
                       "Valid Insurance Policy",
-                      "Payment (Cash/Card)"
+                      "Payment (CASH ONLY)"
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-4 bg-black/40 p-4 rounded-2xl border border-white/5">
                         <div className="w-2 h-2 rounded-full bg-[var(--orange)] shrink-0" />
@@ -569,7 +563,10 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
                   </div>
                 </div>
 
-                {/* Option C: Order Ride */}
+                {/* Position 2 (Top Right): Release Authorization */}
+                <DigitalReleaseForm />
+
+                {/* Position 3 (Bottom Left): Order a Ride */}
                 <div className="bg-white rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-6">
                   <div>
                     <div className="flex items-center gap-4 mb-4">
@@ -592,6 +589,9 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
                     </a>
                   </div>
                 </div>
+
+                {/* Position 4 (Bottom Right): Sell Junk Car */}
+                <JunkCarQuoteFlow />
 
               </div>
             </motion.div>
