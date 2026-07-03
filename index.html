@@ -11,6 +11,240 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://towguys.com/" />
     <link rel="canonical" href="https://towguys.com/" />
+
+    <!-- LocalBusiness + AutoRepair + TowingBusiness JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["AutoRepair", "TowingBusiness"],
+      "@id": "https://towguys.com/#business",
+      "name": "Tow Guys LLC",
+      "alternateName": "Tow Guys 24HR Roadside",
+      "url": "https://towguys.com/",
+      "telephone": "+1-971-222-7994",
+      "email": "info@towguys.com",
+      "image": "https://towguys.com/logo.png",
+      "logo": "https://towguys.com/logo.png",
+      "description": "24/7 emergency towing, flatbed towing, roadside assistance, and accident recovery serving Gresham, Troutdale, Wood Village, Fairview, Boring, Sandy, Corbett, Portland, and Clackamas, Oregon.",
+      "priceRange": "$$",
+      "currenciesAccepted": "USD",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "28901 SE Dodge Park Blvd",
+        "addressLocality": "Gresham",
+        "addressRegion": "OR",
+        "postalCode": "97080",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 45.4833,
+        "longitude": -122.3996
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Gresham",
+          "sameAs": "https://en.wikipedia.org/wiki/Gresham,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.4983,
+              "longitude": -122.4310
+            },
+            "geoRadius": "8 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Troutdale",
+          "sameAs": "https://en.wikipedia.org/wiki/Troutdale,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.5393,
+              "longitude": -122.3872
+            },
+            "geoRadius": "5 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Wood Village",
+          "sameAs": "https://en.wikipedia.org/wiki/Wood_Village,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.5334,
+              "longitude": -122.4176
+            },
+            "geoRadius": "3 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Fairview",
+          "sameAs": "https://en.wikipedia.org/wiki/Fairview,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.5390,
+              "longitude": -122.4340
+            },
+            "geoRadius": "4 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Boring",
+          "sameAs": "https://en.wikipedia.org/wiki/Boring,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.4326,
+              "longitude": -122.3682
+            },
+            "geoRadius": "6 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Sandy",
+          "sameAs": "https://en.wikipedia.org/wiki/Sandy,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.3973,
+              "longitude": -122.2612
+            },
+            "geoRadius": "7 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Corbett",
+          "sameAs": "https://en.wikipedia.org/wiki/Corbett,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.5219,
+              "longitude": -122.2285
+            },
+            "geoRadius": "6 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Portland",
+          "sameAs": "https://en.wikipedia.org/wiki/Portland,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.5152,
+              "longitude": -122.6784
+            },
+            "geoRadius": "15 mi"
+          }
+        },
+        {
+          "@type": "City",
+          "name": "Clackamas",
+          "sameAs": "https://en.wikipedia.org/wiki/Clackamas,_Oregon",
+          "geo": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 45.4076,
+              "longitude": -122.5712
+            },
+            "geoRadius": "8 mi"
+          }
+        }
+      ],
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Emergency Towing",
+            "description": "24/7 emergency tow dispatch for breakdowns, disabled vehicles, and urgent roadside situations across East Portland, Gresham, and the Mt. Hood Corridor.",
+            "serviceType": "Emergency Towing",
+            "areaServed": { "@type": "State", "name": "Oregon" },
+            "availableChannel": {
+              "@type": "ServiceChannel",
+              "servicePhone": "+1-971-222-7994",
+              "availableLanguage": "English"
+            },
+            "hoursAvailable": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+              "opens": "00:00",
+              "closes": "23:59"
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Flatbed Towing",
+            "description": "Flatbed tow truck service for all-wheel drive, luxury, classic, and lowered vehicles. Zero-scratch transport guaranteed.",
+            "serviceType": "Flatbed Towing"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Roadside Assistance",
+            "description": "Jump starts, lockout service, tire changes, and fuel delivery. Fast response times to get you back on the road.",
+            "serviceType": "Roadside Assistance"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Accident Recovery",
+            "description": "Professional accident vehicle towing and recovery. Coordination with law enforcement and insurance. Secure vehicle storage available.",
+            "serviceType": "Accident Recovery and Towing"
+          }
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "bestRating": "5",
+        "ratingCount": "51",
+        "reviewCount": "51"
+      },
+      "sameAs": [
+        "https://www.facebook.com/TowGuysPortland",
+        "https://www.instagram.com/towguysgresham",
+        "https://www.google.com/maps/place/Tow+Guys+24HR+Roadside"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
