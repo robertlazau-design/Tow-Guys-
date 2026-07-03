@@ -631,7 +631,6 @@ const HeroGallery = () => {
   );
 };
 
-          <ClientReviews />
 const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <>
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
@@ -798,66 +797,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Alex Ziegelmeier",
-                time: "7 months ago",
-                text: "Absolute Professionals!! I got into an accident with my BMW classic car and the tow process was lightning fast and without causing anymore additional damage to the car. Very happy!"
-              },
-              {
-                name: "Nicole Hansel",
-                time: "6 months ago",
-                text: "Super fast roadside assistance to get my key out of my locked car. I highly recommend them!"
-              },
-              {
-                name: "Jim Bernard",
-                time: "7 months ago",
-                text: "On time and professional, if you need help or a tow tow guys are the ones to use. Alex picked up my old jag and dropped it off at my mechanics shop. Not often you can have a great experience when you need a car towed."
-              },
-              {
-                name: "Nikki Harbert",
-                time: "2 months ago",
-                text: "Super helpful, kind, and great communication. They were also easy to reach every time I called."
-              },
-              {
-                name: "Geobuddy",
-                time: "2 years ago",
-                text: "This company made my day! My car broke down on the way up Mt Hood... I called a couple places and was eventually referred to these guys. When I called, the person who answered was super helpful."
-              },
-              {
-                name: "Tawny Milton",
-                time: "3 years ago",
-                text: "Very easy, fast and good communication. After dealing with a different tow company for over 4 hours, Tow Guys came to help in 30 minutes. Highly recommend."
-              }
-            ].map((review, i) => (
-              <div key={i} className="bg-[#111] border border-white/10 p-6 rounded-2xl flex flex-col gap-4 hover:border-white/30 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--blue)] to-[var(--orange)] flex items-center justify-center font-display font-bold text-lg">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm">{review.name}</h4>
-                    <p className="font-mono text-[10px] opacity-50">{review.time}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4 text-[#FBBC04]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="font-mono text-sm opacity-80 leading-relaxed flex-1">"{review.text}"</p>
-                <div className="flex items-center gap-2 mt-2 pt-4 border-t border-white/10">
-                  <svg className="w-4 h-4 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                  </svg>
-                  <span className="font-mono text-[10px] opacity-40 uppercase">Verified Google Review</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ClientReviews />
         </div>
       </section>
   </>
