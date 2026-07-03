@@ -21,6 +21,48 @@ export default defineConfig(({mode}) => {
               next();
             }
           });
+
+          server.middlewares.use('/api/publish-blog', (req, res, next) => {
+            if (req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => { body += chunk.toString(); });
+              req.on('end', () => {
+                try {
+                  const data = JSON.parse(body);
+                  const fs = require('fs');
+                  const path = require('path');
+                  const blogsFilePath = path.join(__dirname, 'src', 'data', 'blogs.json');
+                  let blogs = [];
+                  if (fs.existsSync(blogsFilePath)) {
+                    blogs = JSON.parse(fs.readFileSync(blogsFilePath, 'utf8'));
+                  }
+                  
+                  const newPost = {
+                    id: Date.now().toString(),
+                    title: data.title,
+                    slug: data.slug,
+                    content: data.content,
+                    meta_description: data.meta_description || '',
+                    author: data.author || 'AI Author',
+                    published_date: new Date().toISOString(),
+                    featured_image_url: data.featured_image_url || ''
+                  };
+                  
+                  blogs.unshift(newPost);
+                  fs.writeFileSync(blogsFilePath, JSON.stringify(blogs, null, 2));
+                  
+                  res.setHeader('Content-Type', 'application/json');
+                  res.statusCode = 200;
+                  res.end(JSON.stringify({ success: true, post: newPost }));
+                } catch (e) {
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: 'Failed to save mock post' }));
+                }
+              });
+            } else {
+              next();
+            }
+          });
         }
       }
     ],

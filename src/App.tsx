@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload, MessageSquare, IdCard, PenTool } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import SignatureCanvas from 'react-signature-canvas';
+import { Routes, Route, Link } from 'react-router-dom';
+import BlogIndex from './pages/BlogIndex';
+import BlogPost from './pages/BlogPost';
 
 const DigitalReleaseForm = () => {
   const [step, setStep] = useState(0);
@@ -628,41 +631,8 @@ const HeroGallery = () => {
   );
 };
 
-export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  return (
-    <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
-      <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
-      {/* Noise Texture Overlay */}
-      <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
-
-      {/* Header */}
-      <header className={`sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 backdrop-blur-md transition-colors duration-500 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
-        <div 
-          className="flex items-center gap-3 cursor-pointer" 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          role="button"
-          tabIndex={0}
-          aria-label="Scroll to top"
-        >
-          <img src="/logo.png" alt="Tow Guys Logo" className={`h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105 duration-300 ${isDarkMode ? 'invert hue-rotate-180' : ''}`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
-          <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
-        </div>
-        
-        <button 
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
-            isDarkMode 
-              ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]' 
-              : 'bg-[var(--bg)] text-[var(--fg)] border-[var(--border)] hover:bg-[var(--blue)] hover:text-white hover:border-[var(--blue)]'
-          }`}
-        >
-          {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-        </button>
-      </header>
-
+const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
+  <>
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
 
       {/* Hero Section */}
@@ -889,6 +859,59 @@ export default function App() {
           </div>
         </div>
       </section>
+  </>
+);
+
+
+export default function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
+      <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
+      {/* Noise Texture Overlay */}
+      <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+
+      {/* Header */}
+      <header className={`sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 backdrop-blur-md transition-colors duration-500 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
+        <Link 
+          to="/"
+          className="flex items-center gap-3 cursor-pointer" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          role="button"
+          tabIndex={0}
+          aria-label="Scroll to top"
+        >
+          <img src="/logo.png" alt="Tow Guys Logo" className={`h-10 md:h-14 w-auto object-contain transition-transform hover:scale-105 duration-300 ${isDarkMode ? 'invert hue-rotate-180' : ''}`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+          <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
+        </Link>
+        
+        <div className="flex items-center gap-4">
+          <Link to="/blog" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            News & Tips
+          </Link>
+          <button 
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]' 
+                : 'bg-[var(--bg)] text-[var(--fg)] border-[var(--border)] hover:bg-[var(--blue)] hover:text-white hover:border-[var(--blue)]'
+            }`}
+          >
+            {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+          </button>
+        </div>
+      </header>
+
+      <div className="flex-1 flex flex-col">
+        <Routes>
+          <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+        </Routes>
+      </div>
+
 
       {/* Footer */}
       <footer className={`p-6 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-t border-[var(--border)] transition-colors duration-500 relative z-10 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
