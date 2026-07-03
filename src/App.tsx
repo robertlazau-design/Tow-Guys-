@@ -887,6 +887,9 @@ export default function App() {
         </Link>
         
         <div className="flex items-center gap-4">
+          <Link to="/" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            Home
+          </Link>
           <Link to="/blog" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
             News & Tips
           </Link>
