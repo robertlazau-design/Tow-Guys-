@@ -631,6 +631,7 @@ const HeroGallery = () => {
   );
 };
 
+          <ClientReviews />
 const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <>
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
