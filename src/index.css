@@ -70,3 +70,43 @@ body {
   color: #7ab3ff;
   text-decoration-color: #7ab3ff;
 }
+
+/* ─── Soro Embed Content ───────────────────────────────────────────────────── */
+/* Ensures AI-generated content inside the Soro embed renders with strong       */
+/* contrast in light mode and correct colors in dark mode.                      */
+
+#soro-blog p,
+#soro-blog li,
+#soro-blog span {
+  color: #000000;
+}
+
+.dark #soro-blog p,
+.dark #soro-blog li,
+.dark #soro-blog span {
+  color: #e5e7eb; /* gray-200 */
+}
+
+/* Inline links inside Soro-generated content */
+#soro-blog a {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+#soro-blog a:hover {
+  color: #0044cc;
+  text-decoration-color: #0044cc;
+}
+
+.dark #soro-blog a {
+  color: #5b9fff;
+}
+
+.dark #soro-blog a:hover {
+  color: #7ab3ff;
+  text-decoration-color: #7ab3ff;
+}

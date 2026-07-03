@@ -90,18 +90,18 @@ export default function BlogPost() {
           <div className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[0.02] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
           
           <div className="relative z-10">
-            <div className="flex items-center gap-4 font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-3">
+            <div className="flex items-center gap-4 font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1.5">
               <time dateTime={post.published_date}>{new Date(post.published_date).toLocaleDateString()}</time>
               <span>•</span>
               <span>{post.author}</span>
             </div>
             
-            <h1 className="font-display font-bold text-3xl md:text-5xl leading-tight mb-6">
+            <h1 className="font-display font-bold text-3xl md:text-5xl leading-tight mb-4">
               {post.title}
             </h1>
 
             <div 
-              className="blog-content prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-img:rounded-2xl prose-p:text-black dark:prose-p:text-gray-200 prose-p:font-normal prose-p:leading-relaxed"
+              className="blog-content prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-img:rounded-2xl prose-p:text-black dark:prose-p:text-gray-200 prose-p:font-normal prose-p:leading-relaxed prose-h2:text-2xl prose-h3:text-xl"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>

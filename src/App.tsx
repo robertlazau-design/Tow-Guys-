@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload, MessageSquare, IdCard, PenTool } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import SignatureCanvas from 'react-signature-canvas';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
 
@@ -865,6 +865,9 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const isBlog = location.pathname.startsWith('/blog');
 
   return (
     <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
@@ -887,17 +890,32 @@ export default function App() {
         </Link>
         
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="flex items-center gap-3 md:gap-4">
-            <Link to="/" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+          <nav className="flex items-center gap-8">
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className={`font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isHome
+                  ? (isDarkMode ? 'text-white opacity-100' : 'text-black opacity-100')
+                  : (isDarkMode ? 'text-white opacity-60 hover:opacity-100' : 'text-black opacity-60 hover:opacity-100')
+              }`}
+            >
               Home
             </Link>
-            <span className={`font-mono text-xs font-light opacity-30 select-none ${isDarkMode ? 'text-white' : 'text-black'}`}>
-              |
-            </span>
-            <Link to="/blog" className={`font-mono text-xs font-bold uppercase tracking-wider hover:text-[var(--orange)] transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
+              isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
+            }`}>|</span>
+            <Link
+              to="/blog"
+              className={`font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isBlog
+                  ? (isDarkMode ? 'text-white opacity-100' : 'text-black opacity-100')
+                  : (isDarkMode ? 'text-white opacity-60 hover:opacity-100' : 'text-black opacity-60 hover:opacity-100')
+              }`}
+            >
               News & Tips
             </Link>
-          </div>
+          </nav>
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
