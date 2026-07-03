@@ -44,3 +44,29 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Blog Article Body Links ─────────────────────────────────────────────── */
+/* Scoped to .blog-content so nav, footer, and card links are never affected.  */
+.blog-content a {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.blog-content a:hover {
+  color: #0044cc;
+  text-decoration-color: #0044cc;
+}
+
+/* Dark mode override */
+.dark .blog-content a {
+  color: #5b9fff;
+}
+
+.dark .blog-content a:hover {
+  color: #7ab3ff;
+  text-decoration-color: #7ab3ff;
+}

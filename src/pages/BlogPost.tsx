@@ -101,7 +101,7 @@ export default function BlogPost() {
             </h1>
 
             <div 
-              className="prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-a:text-[var(--blue)] hover:prose-a:text-[var(--orange)] prose-img:rounded-2xl prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:font-normal prose-p:leading-relaxed"
+              className="blog-content prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-headings:uppercase prose-img:rounded-2xl prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:font-normal prose-p:leading-relaxed"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
