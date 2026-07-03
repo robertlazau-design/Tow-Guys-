@@ -75,19 +75,77 @@ body {
 /* Ensures AI-generated content inside the Soro embed renders with strong       */
 /* contrast in light mode and correct colors in dark mode.                      */
 
+/* Light mode: all body text solid black */
 #soro-blog p,
 #soro-blog li,
 #soro-blog span {
   color: #000000;
 }
 
+/* Light mode: headings solid dark charcoal */
+#soro-blog h1,
+#soro-blog h2,
+#soro-blog h3,
+#soro-blog h4 {
+  color: #0a0a0a;
+}
+
+/* Light mode: title-anchor links (headings wrapped in <a>) — dark charcoal */
+#soro-blog h1 a,
+#soro-blog h2 a,
+#soro-blog h3 a,
+#soro-blog h4 a {
+  color: #0a0a0a;
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+#soro-blog h1 a:hover,
+#soro-blog h2 a:hover,
+#soro-blog h3 a:hover,
+#soro-blog h4 a:hover {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-color: var(--blue);
+  text-underline-offset: 3px;
+}
+
+/* ─── Dark mode overrides — !important beats the injected script's specificity */
+
 .dark #soro-blog p,
 .dark #soro-blog li,
 .dark #soro-blog span {
-  color: #e5e7eb; /* gray-200 */
+  color: #e5e7eb !important; /* gray-200 */
 }
 
-/* Inline links inside Soro-generated content */
+.dark #soro-blog h1,
+.dark #soro-blog h2,
+.dark #soro-blog h3,
+.dark #soro-blog h4 {
+  color: #ffffff !important;
+}
+
+/* Title-anchor links inside headings — force pure white in dark mode */
+.dark #soro-blog h1 a,
+.dark #soro-blog h2 a,
+.dark #soro-blog h3 a,
+.dark #soro-blog h4 a {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.dark #soro-blog h1 a:hover,
+.dark #soro-blog h2 a:hover,
+.dark #soro-blog h3 a:hover,
+.dark #soro-blog h4 a:hover {
+  color: #7ab3ff !important;
+  text-decoration: underline;
+  text-decoration-color: #7ab3ff !important;
+  text-underline-offset: 3px;
+}
+
+/* ─── Inline body links inside Soro content ─────────────────────────────────── */
+
 #soro-blog a {
   color: var(--blue);
   font-weight: 500;
@@ -103,10 +161,10 @@ body {
 }
 
 .dark #soro-blog a {
-  color: #5b9fff;
+  color: #5b9fff !important;
 }
 
 .dark #soro-blog a:hover {
-  color: #7ab3ff;
-  text-decoration-color: #7ab3ff;
+  color: #7ab3ff !important;
+  text-decoration-color: #7ab3ff !important;
 }
