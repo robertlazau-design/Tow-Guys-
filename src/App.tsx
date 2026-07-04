@@ -5,6 +5,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
+import ServiceArea from './pages/ServiceArea';
 
 const DigitalReleaseForm = () => {
   const [step, setStep] = useState(0);
@@ -935,6 +936,7 @@ export default function App() {
           <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/towing/:city" element={<ServiceArea />} />
         </Routes>
       </div>
 
