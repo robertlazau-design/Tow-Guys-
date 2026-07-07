@@ -3,6 +3,7 @@ import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshai
 import { AnimatePresence, motion } from 'motion/react';
 import SignatureCanvas from 'react-signature-canvas';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
 import ServiceArea from './pages/ServiceArea';
@@ -1048,6 +1049,7 @@ export default function App() {
           />
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
