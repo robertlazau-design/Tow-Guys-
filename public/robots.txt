@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://towguys.com/sitemap.xml
+Sitemap: https://towguysgresham.com/sitemap.xml

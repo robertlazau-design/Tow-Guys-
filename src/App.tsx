@@ -6,6 +6,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
 import ServiceArea from './pages/ServiceArea';
+import SERVICE_AREAS from './data/serviceAreas';
 
 const DigitalReleaseForm = () => {
   const [step, setStep] = useState(0);
@@ -869,6 +870,7 @@ export default function App() {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isBlog = location.pathname.startsWith('/blog');
+  const isServiceArea = location.pathname.startsWith('/towing/');
 
   return (
     <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
@@ -902,6 +904,19 @@ export default function App() {
               }`}
             >
               Home
+            </Link>
+            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
+              isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
+            }`}>|</span>
+            <Link
+              to="/towing/gresham"
+              className={`font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                isServiceArea
+                  ? (isDarkMode ? 'text-white opacity-100' : 'text-black opacity-100')
+                  : (isDarkMode ? 'text-white opacity-60 hover:opacity-100' : 'text-black opacity-60 hover:opacity-100')
+              }`}
+            >
+              Service Areas
             </Link>
             <span className={`font-mono text-xs font-light select-none pointer-events-none ${
               isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
@@ -971,6 +986,22 @@ export default function App() {
           </div>
         </div>
         
+        {/* Service Area Links for SEO */}
+        <div className="w-full md:w-auto mb-8 md:mb-0">
+          <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Service Areas</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {SERVICE_AREAS.map((area) => (
+              <Link
+                key={area.slug}
+                to={`/towing/${area.slug}`}
+                className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
+              >
+                {area.name}, OR
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="text-left md:text-right w-full md:w-auto">
           <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-2 flex items-center gap-2 md:justify-end">
             <span className="w-2 h-2 rounded-full bg-[var(--orange)] animate-pulse"></span>

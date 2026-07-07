@@ -12,7 +12,7 @@ export default function BlogPost() {
     return <Navigate to="/blog" replace />;
   }
 
-  const siteUrl = 'https://towguysgresham.com'; // Use actual domain in production
+  const siteUrl = 'https://towguysgresham.com';
   const postUrl = `${siteUrl}/blog/${post.slug}`;
 
   // JSON-LD Schema
