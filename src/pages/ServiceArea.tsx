@@ -8,7 +8,7 @@ import SERVICE_AREAS, { type CityData } from '../data/serviceAreas';
 
 const PHONE       = '(971) 222-7994';
 const PHONE_HREF  = 'tel:9712227994';
-const SITE_URL    = 'https://towguysgresham.com';
+const SITE_URL    = 'https://www.towguysgresham.com';
 
 const NAP = {
   name:    'Tow Guys LLC',

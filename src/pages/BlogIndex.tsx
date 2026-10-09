@@ -31,6 +31,7 @@ export default function BlogIndex() {
           name="description"
           content="Latest towing tips, roadside safety guides, and local driving news from Tow Guys LLC serving Gresham, Troutdale, Portland, and the Mt. Hood Corridor."
         />
+        <link rel="canonical" href="https://www.towguysgresham.com/blog" />
       </Helmet>
 
       {/* Page header */}
