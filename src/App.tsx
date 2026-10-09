@@ -3,6 +3,7 @@ import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshai
 import { AnimatePresence, motion } from 'motion/react';
 import SignatureCanvas from 'react-signature-canvas';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
 import ServiceArea from './pages/ServiceArea';
@@ -635,6 +636,10 @@ const HeroGallery = () => {
 
 const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <>
+      <Helmet>
+        <meta property="og:url" content="https://www.towguysgresham.com/" />
+        <link rel="canonical" href="https://www.towguysgresham.com/" />
+      </Helmet>
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
 
       {/* Hero Section */}
