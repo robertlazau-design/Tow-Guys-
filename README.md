@@ -14,8 +14,8 @@ npm run dev
 
 `npm run build` builds the app, then `scripts/prerender.mjs` writes a finished
 HTML file for every route listed in `src/entry-server.tsx` (home, blog, privacy,
-every service and city page). Vercel serves those files directly (`cleanUrls`),
-so crawlers and link previews see real content; React then takes over in the
+every service and city page). Vercel serves those files directly
+via the rewrites in `vercel.json`, so crawlers and link previews see real content; React then takes over in the
 browser. Anything without a file gets `public/404.html`.
 
 ## Where things live

@@ -1,7 +1,6 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
     {
@@ -11,6 +10,10 @@
     }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/services/:slug", "destination": "/services/:slug.html" },
+    { "source": "/towing/:city", "destination": "/towing/:city.html" }
   ]
 }
