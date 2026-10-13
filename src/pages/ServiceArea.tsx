@@ -159,15 +159,15 @@ export default function ServiceArea() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--orange)]" />
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-white/70 font-bold">
-              24/7 Dispatch — {city.name}, OR
+            <span className="font-mono text-xs md:text-[10px] uppercase tracking-widest text-white/70 font-bold">
+              Open 24/7 — {city.name}, OR
             </span>
           </div>
 
           {/* Highway corridor badge */}
           <div className="inline-flex items-center gap-2 bg-[var(--blue)]/10 border border-[var(--blue)]/30 rounded-full px-4 py-1.5 mb-8 ml-3">
             <MapPin className="w-3 h-3 text-[var(--blue)]" />
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--blue)] font-bold">
+            <span className="font-mono text-xs md:text-[10px] uppercase tracking-widest text-[var(--blue)] font-bold">
               {city.highway} Corridor — {city.exitRef}
             </span>
           </div>
@@ -187,7 +187,7 @@ export default function ServiceArea() {
             <a
               href={PHONE_HREF}
               id={`cta-call-${city.slug}`}
-              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-8 py-5 rounded-2xl font-display font-bold text-lg md:text-xl uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
+              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
             >
               <Phone className="w-6 h-6" />
               Call Now: {PHONE}
@@ -248,7 +248,7 @@ export default function ServiceArea() {
                 <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-[var(--blue)]/20 transition-colors">
                   <s.icon className="w-6 h-6 text-[var(--blue)]" />
                 </div>
-                <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">{s.tag}</span>
+                <span className="font-mono text-xs md:text-[10px] text-white/30 uppercase tracking-widest">{s.tag}</span>
               </div>
               <h3 className="font-display font-bold text-xl uppercase tracking-tight mb-3 group-hover:text-[var(--blue)] transition-colors">
                 {s.title}
@@ -271,11 +271,11 @@ export default function ServiceArea() {
                   src={img.src}
                   alt={img.alt}
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover [@media(hover:hover)]:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="font-mono text-[10px] text-white/60 uppercase tracking-wider leading-relaxed">
+                  <p className="font-mono text-xs md:text-[10px] text-white/60 uppercase tracking-wider leading-relaxed">
                     {img.alt}
                   </p>
                 </div>
@@ -322,7 +322,7 @@ export default function ServiceArea() {
               </p>
               <div className="flex flex-wrap gap-2 mt-4">
                 {city.landmarks.map((landmark, i) => (
-                  <span key={i} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 font-mono text-[10px] text-white/60 uppercase tracking-widest">
+                  <span key={i} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 font-mono text-xs md:text-[10px] text-white/60 uppercase tracking-widest">
                     <MapPin className="w-2.5 h-2.5" />
                     {landmark}
                   </span>
@@ -365,7 +365,7 @@ export default function ServiceArea() {
       <section className="border-b border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-3">
           {[
-            { icon: Clock, title: '24/7 Dispatch', desc: 'Every call answered live — no voicemail, no hold music, no chatbots.' },
+            { icon: Clock, title: 'Open 24/7', desc: 'Every call answered live — no voicemail, no hold music, no chatbots.' },
             { icon: Shield, title: 'Licensed & Insured', desc: 'Fully licensed Oregon towing operator with comprehensive insurance coverage.' },
             { icon: Star, title: '4.9★ Google Rating', desc: '50+ verified reviews from real customers across the service area.' },
           ].map((item, i) => (
@@ -409,7 +409,7 @@ export default function ServiceArea() {
                   </p>
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3 h-3 text-white/30" />
-                    <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+                    <span className="font-mono text-xs md:text-[10px] text-white/30 uppercase tracking-widest">
                       {nearby.highway}
                     </span>
                   </div>
@@ -447,7 +447,7 @@ export default function ServiceArea() {
 
           {/* All service area links for crawler depth */}
           <div className="mt-12 pt-8 border-t border-white/10">
-            <p className="font-mono text-[10px] text-white/20 uppercase tracking-widest mb-4">All Service Areas</p>
+            <p className="font-mono text-xs md:text-[10px] text-white/20 uppercase tracking-widest mb-4">All Service Areas</p>
             <div className="flex flex-wrap justify-center gap-3">
               {SERVICE_AREAS.map((c) => (
                 <Link

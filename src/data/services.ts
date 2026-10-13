@@ -62,7 +62,7 @@ const SERVICES: ServiceData[] = [
       {
         headline: 'Tap to send your exact location',
         body:
-          'On your phone, the "Send My Location" button on this site opens a text to our dispatch with a map pin of exactly where you are — useful on the freeway, on back roads, or anywhere you\'re not sure of the address.',
+          'On your phone, the "Text My Location" button on this site opens a text to us with a map pin of exactly where you are — just press Send — useful on the freeway, on back roads, or anywhere you\'re not sure of the address.',
       },
     ],
     faqs: [
@@ -179,7 +179,7 @@ const SERVICES: ServiceData[] = [
       {
         headline: 'Stay safe while you wait',
         body:
-          'If you can, pull fully onto the shoulder or into a parking lot, turn on your hazards, and stay buckled in your vehicle on busy roads like I-84 or US-26. Use "Send My Location" so our driver can find you without guesswork.',
+          'If you can, pull fully onto the shoulder or into a parking lot, turn on your hazards, and stay buckled in your vehicle on busy roads like I-84 or US-26. Tap "Text My Location" (then press Send) so our driver can find you without guesswork.',
       },
     ],
     faqs: [
@@ -308,7 +308,7 @@ const SERVICES: ServiceData[] = [
       {
         question: 'How do I get a quote?',
         answer:
-          'Text three photos (front, side and interior) plus the year, make and model to (971) 222-7994, or use the "Sell Junk Car" option in the Recovery Hub on our homepage.',
+          'Text three photos (front, side and interior) plus the year, make and model to (971) 222-7994, or use "Sell Junk Car for Cash" on our homepage.',
       },
       {
         question: 'What paperwork do I need?',

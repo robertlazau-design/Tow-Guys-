@@ -15,10 +15,10 @@ const SECTIONS: { heading: string; body: React.ReactNode }[] = [
     ),
   },
   {
-    heading: '"Send My Location"',
+    heading: '"Text My Location"',
     body: (
       <>
-        When you tap "Send My Location," your browser asks for permission to read your
+        When you tap "Text My Location," your browser asks for permission to read your
         device's location. If you allow it, the site uses that location only to fill in a
         Google Maps link in a new text message on your phone. Nothing is sent until you
         press send in your messaging app, and the website itself does not store your

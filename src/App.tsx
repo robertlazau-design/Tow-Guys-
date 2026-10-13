@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Siren, SquareParking, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ArrowLeft, MessageSquare } from 'lucide-react';
+import { Car, Truck, AlertTriangle, Zap, Siren, SquareParking, Menu, Phone, MapPin, Loader2, ListChecks, Map, Banknote, Instagram, Facebook, Sun, Moon, Camera, ArrowLeft, MessageSquare } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -11,30 +11,16 @@ import SERVICE_AREAS from './data/serviceAreas';
 import SERVICES from './data/services';
 import ServicePage from './pages/ServicePage';
 import Picture from './components/Picture';
-
-// Release authorization isn't live yet; the old upload/signature flow had no
-// working backend, so only the placeholder card ships for now.
-const DigitalReleaseForm = () => (
-  <motion.div layoutId="digital-release-card" className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg h-full border border-transparent">
-    <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
-      <FileSignature className="w-32 h-32" />
-    </div>
-    <div className="relative z-10 font-sans">
-      <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-        <FileSignature className="w-6 h-6 text-white" />
-      </div>
-      <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
-      <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle or belongings</p>
-    </div>
-    <button 
-      disabled
-      className="relative z-10 w-full bg-white/40 text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider opacity-70 cursor-not-allowed shadow-lg">
-      Coming Soon
-    </button>
-  </motion.div>
-);
+import MobileMenu from './components/MobileMenu';
 
 const Marquee = ({ text }: { text: string }) => {
+  // Scroll only on larger screens, and never for people who've asked their
+  // device to reduce motion. Decided after mount so prerendered HTML matches.
+  const [shouldScroll, setShouldScroll] = useState(false);
+  useEffect(() => {
+    setShouldScroll(window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)').matches);
+  }, []);
+
   const content = [...Array(5)].map((_, i) => (
     <span key={i} className="flex items-center gap-8 mx-4">
       {text} <AlertTriangle className="w-4 h-4 text-[var(--orange)]" />
@@ -45,7 +31,7 @@ const Marquee = ({ text }: { text: string }) => {
     <div className="overflow-hidden whitespace-nowrap py-3 border-y border-[var(--border)] bg-[var(--blue)] text-white flex items-center relative z-20 w-full">
       <motion.div
         className="flex font-mono text-sm uppercase tracking-widest font-bold"
-        animate={{ x: ["0%", "-50%"] }}
+        animate={shouldScroll ? { x: ["0%", "-50%"] } : { x: "0%" }}
         transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
         style={{ width: "fit-content" }}
       >
@@ -56,8 +42,8 @@ const Marquee = ({ text }: { text: string }) => {
   );
 };
 
-const OneClickDispatch = ({ className = "", isPulse = false }: { className?: string, isPulse?: boolean }) => {
-  const [dispatchState, setDispatchState] = useState<'idle' | 'locating' | 'success'>('idle');
+const OneClickDispatch = ({ className = "", isPulse = false, label = "Text My Location" }: { className?: string, isPulse?: boolean, label?: string }) => {
+  const [dispatchState, setDispatchState] = useState<'idle' | 'locating' | 'success' | 'calling'>('idle');
 
   const handleDispatch = () => {
     if (dispatchState !== 'idle') return;
@@ -71,13 +57,15 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
       const separator = isIOS ? '&' : '?';
       window.location.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(message)}`;
       
-      // Reset state after a brief delay so it's ready if they navigate back
-      setTimeout(() => setDispatchState('idle'), 3000);
+      // Keep the "press Send" reminder up for when they switch back to the page
+      setTimeout(() => setDispatchState('idle'), 15000);
     };
 
+    // No location (denied or unavailable): call instead, and say so
     const fallbackCall = () => {
-      setDispatchState('idle'); // fail gracefully, reset
+      setDispatchState('calling');
       window.location.href = `tel:${phoneNumber}`;
+      setTimeout(() => setDispatchState('idle'), 4000);
     };
 
     if (!navigator.geolocation) {
@@ -92,9 +80,9 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
         const { latitude, longitude } = position.coords;
         const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
         
-        // Brief success state before redirect
+        // Tell them what happens next before their messages app opens
         setDispatchState('success');
-        setTimeout(() => triggerSMS(mapsLink), 1000);
+        setTimeout(() => triggerSMS(mapsLink), 1200);
       },
       (error) => {
         console.warn("Geolocation failed or denied:", error);
@@ -117,26 +105,14 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
       disabled={dispatchState !== 'idle'}
       className={`${baseClassName} ${className}`}
     >
-      <AnimatePresence mode="wait">
-        {dispatchState === 'idle' && (
-          <motion.div key="idle" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            <span>Send My Location</span>
-          </motion.div>
-        )}
-        {dispatchState === 'locating' && (
-          <motion.div key="locating" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} className="flex items-center gap-2 text-white">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Locating...</span>
-          </motion.div>
-        )}
-        {dispatchState === 'success' && (
-          <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 1.1, opacity: 0 }} className="flex items-center gap-2 text-[#00ff88]">
-            <CheckCircle2 className="w-5 h-5" />
-            <span>GPS Locked.</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Plain swaps, no enter/exit animation: the label must never be blank,
+          even before JS loads or while a background tab pauses animations. */}
+      <span className="flex items-center gap-2" aria-live="polite">
+        {dispatchState === 'idle' && (<><MapPin className="w-5 h-5" /><span>{label}</span></>)}
+        {dispatchState === 'locating' && (<><Loader2 className="w-5 h-5 animate-spin" /><span>Finding You…</span></>)}
+        {dispatchState === 'success' && (<><MessageSquare className="w-5 h-5" /><span>Now Press Send</span></>)}
+        {dispatchState === 'calling' && (<><Phone className="w-5 h-5" /><span>Calling Instead…</span></>)}
+      </span>
     </button>
   );
 };
@@ -144,7 +120,18 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
 const PhoneNumber = () => {
   const number = "971:222:7994";
   return (
-    <div className="flex justify-between items-baseline font-display font-bold text-[12vw] sm:text-[13vw] md:text-[14vw] lg:text-[11vw] xl:text-[12vw] leading-[0.8] tracking-tighter uppercase w-full cursor-crosshair">
+    <a
+      href="tel:9712227994"
+      aria-label="Call Tow Guys at (971) 222-7994"
+      className="block w-full md:cursor-crosshair"
+    >
+      <span className="md:hidden block font-display font-bold text-[11vw] leading-none tracking-tight whitespace-nowrap">
+        (971) 222-7994
+      </span>
+      <span className="md:hidden flex items-center gap-2 mt-3 font-mono text-sm font-bold uppercase tracking-widest text-[var(--blue)]">
+        <Phone className="w-4 h-4" /> Tap to call — open 24/7
+      </span>
+      <span className="hidden md:flex justify-between items-baseline font-display font-bold md:text-[14vw] lg:text-[11vw] xl:text-[12vw] leading-[0.8] tracking-tighter uppercase w-full">
       {number.split('').map((char, i) => {
         const isColon = char === ':';
         const hoverColorClass = isColon ? '' : (i % 2 === 0 ? 'hover:text-[var(--blue)]' : 'hover:text-[var(--orange)]');
@@ -163,7 +150,8 @@ const PhoneNumber = () => {
           </motion.span>
         );
       })}
-    </div>
+      </span>
+    </a>
   );
 };
 
@@ -258,7 +246,7 @@ const JunkCarQuoteFlow = () => {
                 onClick={handleSMSHandoff}
                 className="w-full h-20 rounded-2xl bg-[var(--orange)] text-white font-display font-bold text-xl flex flex-col items-center justify-center hover:scale-105 active:scale-95 transition-all mt-4 shadow-lg">
                 <span className="uppercase tracking-wider">Open Messages</span>
-                <span className="text-[10px] opacity-80 font-mono tracking-widest mt-1">To Send Photos</span>
+                <span className="text-xs md:text-[10px] opacity-80 font-mono tracking-widest mt-1">To Send Photos</span>
               </button>
             </motion.div>
           )}
@@ -269,148 +257,113 @@ const JunkCarQuoteFlow = () => {
   );
 };
 
-const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      // Prevent scrolling when modal is open
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
-  return (
-    <>
-      {/* Main Entry Button */}
-      <div className={`border-t border-[var(--border)] relative z-10 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-gray-100 text-black'}`}>
-        <button 
-          onClick={() => setIsOpen(true)}
-          className="w-full text-left p-8 md:p-16 hover:bg-[var(--blue)] transition-colors duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
-        >
-          <div>
-            <h2 className="font-display font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-2 group-hover:text-white transition-colors">
-              Vehicle Recovery & Junk Car Hub
-            </h2>
-            <p className={`font-mono text-sm md:text-base group-hover:text-white/90 transition-colors ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-              Options for picking up, releasing, or selling a vehicle.
-            </p>
-          </div>
-          <div className="flex items-center gap-4 bg-gray-800 dark:bg-white group-hover:bg-white/20 px-6 py-3 rounded-full border border-transparent transition-all duration-300">
-            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white dark:text-black dark:group-hover:text-white">
-              View Options
-            </span>
-            <div className="w-8 h-8 bg-white/20 dark:bg-black/20 group-hover:bg-white rounded-full flex items-center justify-center group-hover:text-[var(--blue)] transition-colors">
-              <Crosshair className="w-4 h-4 text-white dark:text-black group-hover:text-[var(--blue)]" />
-            </div>
-          </div>
-        </button>
+const RecoveryHub = () => (
+  <section id="recovery" className="scroll-mt-20 border-b border-[var(--border)] bg-[#0f0f0f] text-white">
+    <div className="p-6 md:p-12 max-w-7xl mx-auto">
+      <div className="mb-8 md:mb-10">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-3 h-3 bg-[var(--orange)]" />
+          <h2 className="font-display font-bold text-3xl md:text-5xl uppercase tracking-tighter">
+            Car Got Towed? Selling a Junk Car?
+          </h2>
+        </div>
+        <p className="font-mono text-sm md:text-base text-white/60">
+          Picking up a towed car, selling a junk car, or managing a property — start here.
+        </p>
       </div>
 
-      {/* Modal UI */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xl flex items-center justify-center p-4 md:p-6 overflow-y-auto"
-          >
-            <motion.div 
-              initial={{ y: 40, opacity: 0, scale: 0.95 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 40, opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="bg-[#0f0f0f] w-full max-w-4xl relative flex flex-col my-auto rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+        {/* Car got towed? */}
+        <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+              <ListChecks className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="font-display font-bold text-xl text-white">Car got towed? Bring:</h3>
+          </div>
+          <div className="flex flex-col gap-3">
+            {[
+              "Valid Photo ID (License/Passport)",
+              "Proof of Ownership (Title/Reg)",
+              "Valid Insurance Policy",
+              "Payment (CASH ONLY)"
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-4 bg-black/40 p-4 rounded-2xl border border-white/5">
+                <div className="w-2 h-2 rounded-full bg-[var(--orange)] shrink-0" />
+                <span className="font-mono text-sm text-white/80">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+            <a
+              href="https://maps.google.com/?q=28901+SE+Dodge+Park+Blvd,+Gresham,+OR+97080"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-white text-black rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-gray-200 transition-colors flex justify-center items-center gap-2"
             >
-              {/* Modal Header */}
-              <div className="flex justify-between items-center p-6 md:p-8 pb-4">
-                <div>
-                  <h3 className="font-display font-bold text-3xl text-white tracking-tight">Recovery Hub</h3>
-                  <p className="font-mono text-sm text-white/50 mt-1">Concierge Services</p>
-                </div>
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
-                  aria-label="Close modal"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+              <MapPin className="w-4 h-4" /> Directions
+            </a>
+            <a
+              href="tel:9712227994"
+              className="flex-1 bg-white/10 text-white rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-white/20 transition-colors flex justify-center items-center gap-2"
+            >
+              <Phone className="w-4 h-4" /> Call Ahead
+            </a>
+          </div>
+        </div>
+
+        {/* Order a ride to the yard */}
+        <div className="bg-white rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
+                <Map className="w-5 h-5 text-black" />
               </div>
+              <h3 className="font-display font-bold text-xl text-black">Need a Ride to the Yard?</h3>
+            </div>
+            <div className="bg-black/5 p-4 rounded-2xl">
+              <p className="font-mono text-xs text-black/50 uppercase tracking-widest mb-1">Destination</p>
+              <p className="font-mono text-sm text-black font-bold">28901 SE Dodge Park Blvd, Gresham</p>
+            </div>
+          </div>
+          <div className="flex gap-3 mt-auto">
+            <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=28901%20SE%20Dodge%20Park%20Blvd%2C%20Gresham%2C%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-black text-white rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+              Uber
+            </a>
+            <a href="https://ride.lyft.com/app?destination[address]=28901%20SE%20Dodge%20Park%20Blvd,%20Gresham,%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#FF00BF]/10 text-[#FF00BF] rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-[#FF00BF]/20 transition-colors flex justify-center items-center gap-2">
+              Lyft
+            </a>
+          </div>
+        </div>
 
-              {/* Bento Grid Content */}
-              <div className="p-6 md:p-8 pt-2 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 bg-[#0f0f0f]">
+        {/* Sell junk car */}
+        <JunkCarQuoteFlow />
 
-                {/* Position 1 (Top Left): What to Bring */}
-                <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col gap-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                      <ListChecks className="w-5 h-5 text-white" />
-                    </div>
-                    <h4 className="font-display font-bold text-xl text-white">What to Bring</h4>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    {[
-                      "Valid Photo ID (License/Passport)",
-                      "Proof of Ownership (Title/Reg)",
-                      "Valid Insurance Policy",
-                      "Payment (CASH ONLY)"
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 bg-black/40 p-4 rounded-2xl border border-white/5">
-                        <div className="w-2 h-2 rounded-full bg-[var(--orange)] shrink-0" />
-                        <span className="font-mono text-sm text-white/80">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        {/* Property managers */}
+        <Link
+          to="/services/private-property-impound"
+          className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg"
+        >
+          <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+            <SquareParking className="w-32 h-32" />
+          </div>
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
+              <SquareParking className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Property<br/>Managers</h3>
+            <p className="font-mono text-sm text-white/80">Unauthorized or abandoned vehicles? Private property impounds at no cost to you.</p>
+          </div>
+          <span className="relative z-10 w-full bg-white text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider text-center group-hover:scale-[1.02] transition-transform shadow-lg">
+            Learn More
+          </span>
+        </Link>
 
-                {/* Position 2 (Top Right): Release Authorization */}
-                <DigitalReleaseForm />
-
-                {/* Position 3 (Bottom Left): Order a Ride */}
-                <div className="bg-white rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-6">
-                  <div>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
-                        <Map className="w-5 h-5 text-black" />
-                      </div>
-                      <h4 className="font-display font-bold text-xl text-black">Order a Ride</h4>
-                    </div>
-                    <div className="bg-black/5 p-4 rounded-2xl">
-                      <p className="font-mono text-xs text-black/50 uppercase tracking-widest mb-1">Destination</p>
-                      <p className="font-mono text-sm text-black font-bold">28901 SE Dodge Park Blvd</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 mt-auto">
-                    <a href="https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=28901%20SE%20Dodge%20Park%20Blvd%2C%20Gresham%2C%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-black text-white rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
-                      Uber
-                    </a>
-                    <a href="https://ride.lyft.com/app?destination[address]=28901%20SE%20Dodge%20Park%20Blvd,%20Gresham,%20OR%2097080" target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#FF00BF]/10 text-[#FF00BF] rounded-2xl py-4 font-bold text-sm uppercase tracking-wider hover:bg-[#FF00BF]/20 transition-colors flex justify-center items-center gap-2">
-                      Lyft
-                    </a>
-                  </div>
-                </div>
-
-                {/* Position 4 (Bottom Right): Sell Junk Car */}
-                <JunkCarQuoteFlow />
-
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
+      </div>
+    </div>
+  </section>
+);
 
 const MotionLink = motion.create(Link);
 
@@ -443,7 +396,7 @@ const HeroGallery = () => {
           animate={{ opacity: 0.7, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
-          className="absolute inset-0 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700"
+          className="absolute inset-0 [@media(hover:hover)]:mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700"
         >
           <Picture
             src={images[currentIndex]}
@@ -469,7 +422,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         <link rel="canonical" href="https://www.towguysgresham.com/" />
       </Helmet>
       <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
-      <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
+      <Marquee text="OPEN 24/7 • CALL (971) 222-7994 • GRESHAM, OR • TOW GUYS" />
 
       {/* Hero Section */}
       <section className="flex flex-col border-b border-[var(--border)]">
@@ -491,36 +444,50 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         </div>
 
         <div className="p-4 md:p-6 relative z-10 flex-1 flex flex-col justify-center py-12 md:py-24">
-          <div className="flex justify-between text-[10px] md:text-xs font-mono opacity-60 uppercase tracking-widest mb-2 md:mb-4">
+          <div className="hidden md:flex justify-between text-xs font-mono opacity-60 uppercase tracking-widest mb-4">
             <span>Area Code</span>
             <span>Prefix</span>
             <span>Line Number</span>
           </div>
           <PhoneNumber />
           <div className="mt-8 md:mt-12 flex flex-col gap-4">
-            <p className="font-mono text-xs md:text-sm text-[var(--orange)] font-bold uppercase tracking-widest flex items-center gap-2">
+            <p className="hidden md:flex font-mono text-sm text-[var(--orange)] font-bold uppercase tracking-widest items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--orange)]"></span>
               </span>
-              Need a tow? Tap to instantly text your location to our dispatch team.
+              Need a tow? Call us 24/7 — a real person answers.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-start">
-              <OneClickDispatch className="bg-[var(--blue)] text-white px-8 py-4 text-lg hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none" />
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-start">
               <a 
                 href="tel:9712227994" 
-                className={`flex items-center gap-2 px-8 py-4 text-lg font-display font-bold uppercase tracking-wider transition-colors active:translate-y-1 active:shadow-none ${isDarkMode ? 'bg-[#1a1a1a] text-white border border-white/20 hover:bg-white hover:text-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)]' : 'bg-white text-black border border-black/20 hover:bg-black hover:text-white shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)]'}`}
+                className="min-h-[60px] rounded-2xl flex items-center justify-center gap-3 bg-[var(--blue)] text-white px-8 py-4 text-lg font-display font-bold uppercase tracking-wider hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none transition-colors"
               >
                 <Phone className="w-5 h-5" />
                 Call Now
               </a>
+              {/* Texting a location only works from a phone */}
+              <div className="[@media(pointer:fine)]:hidden flex flex-col gap-2">
+                <OneClickDispatch className={`px-8 py-4 text-lg active:translate-y-1 ${isDarkMode ? 'bg-[#1a1a1a] text-white border border-white/20' : 'bg-white text-black border border-black/20 shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)]'}`} />
+                <p className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--orange)] text-center sm:text-left">
+                  Can't talk? This opens a text to us — just hit Send.
+                </p>
+              </div>
             </div>
+            <ul className="flex flex-wrap gap-2 mt-2 font-mono text-xs font-bold uppercase tracking-wider">
+              {[
+                <><span className="text-[#FBBC04]">★★★★★</span> 4.9 · 51 Google Reviews</>,
+                <>Licensed & Insured</>,
+                <>Gresham-Based · 24/7</>,
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-2 bg-[var(--bg)]/80 backdrop-blur-sm px-3 py-2 rounded-full border border-[var(--border)]">
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
         </div>
-
-        {/* Recovery & Junk Car Hub */}
-        <RecoveryHub isDarkMode={isDarkMode} />
 
         {/* Services Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 border-t border-[var(--border)] relative z-10 bg-[var(--bg)] transition-colors duration-500">
@@ -545,10 +512,10 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
               <div className="relative z-10 group-hover:text-white transition-colors duration-300">
                 <div className="flex justify-between items-center mb-4">
                   <s.icon className="w-4 h-4 group-hover:text-[var(--orange)] transition-colors" />
-                  <span className="font-mono text-[10px] opacity-50">{s.time}</span>
+                  <span className="hidden md:inline font-mono text-[10px] opacity-50">{s.time}</span>
                 </div>
                 <h3 className="font-display font-bold uppercase text-sm md:text-base mb-1">{s.title}</h3>
-                <p className="font-mono text-[10px] md:text-xs opacity-70">{s.desc}</p>
+                <p className="font-mono text-xs md:text-xs opacity-70">{s.desc}</p>
               </div>
             </MotionLink>
           ))}
@@ -566,7 +533,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
           </h2>
           
           <div className="bg-white/10 backdrop-blur-md border border-white/20 text-white p-4 font-mono text-xs md:text-sm flex flex-col gap-1">
-            <span className="text-[var(--orange)] uppercase text-[10px] font-bold">Location</span>
+            <span className="text-[var(--orange)] uppercase text-xs md:text-[10px] font-bold">Location</span>
             <span>28901 SE Dodge Park Blvd</span>
             <span>Gresham, OR 97080</span>
           </div>
@@ -601,6 +568,9 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
           </div>
         </div>
       </section>
+
+      {/* Recovery & Junk Car Hub */}
+      <RecoveryHub />
 
       {/* Reviews Section */}
       <section className="border-b border-[var(--border)] bg-[#0a0a0a] text-white overflow-hidden relative">
@@ -677,7 +647,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
                   <svg className="w-4 h-4 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                   </svg>
-                  <span className="font-mono text-[10px] opacity-40 uppercase">Verified Google Review</span>
+                  <span className="font-mono text-xs md:text-[10px] opacity-40 uppercase">Verified Google Review</span>
                 </div>
               </div>
             ))}
@@ -690,13 +660,16 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => setIsMenuOpen(false), [location.pathname]);
   const isHome = location.pathname === '/';
   const isBlog = location.pathname.startsWith('/blog');
   const isServiceArea = location.pathname.startsWith('/towing/');
 
   return (
-    <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
+    <div className={`min-h-screen font-sans flex flex-col pb-[84px] md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
       {/* Noise Texture Overlay */}
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
@@ -715,11 +688,11 @@ export default function App() {
         </Link>
         
         <div className="flex items-center gap-3 md:gap-6">
-          <nav className="flex items-center gap-3 md:gap-8">
+          <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className={`hidden md:inline font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+              className={`font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                 isHome
                   ? (isDarkMode ? 'text-white opacity-100' : 'text-black opacity-100')
                   : (isDarkMode ? 'text-white opacity-60 hover:opacity-100' : 'text-black opacity-60 hover:opacity-100')
@@ -727,7 +700,7 @@ export default function App() {
             >
               Home
             </Link>
-            <span className={`hidden md:inline font-mono text-xs font-light select-none pointer-events-none ${
+            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
               isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
             }`}>|</span>
             <Link
@@ -740,7 +713,7 @@ export default function App() {
             >
               Service Areas
             </Link>
-            <span className={`hidden md:inline font-mono text-xs font-light select-none pointer-events-none ${
+            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
               isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
             }`}>|</span>
             <Link
@@ -757,17 +730,28 @@ export default function App() {
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            className={`flex items-center gap-2 px-3 md:px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
+            className={`hidden md:flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
               isDarkMode
                 ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]'
                 : 'bg-[var(--bg)] text-[var(--fg)] border-[var(--border)] hover:bg-[var(--blue)] hover:text-white hover:border-[var(--blue)]'
             }`}
           >
             {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-            <span className="hidden md:inline">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+            <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="md:hidden flex items-center gap-2 px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider border border-[var(--border)]"
+            aria-label="Open menu"
+            aria-expanded={isMenuOpen}
+          >
+            <Menu className="w-4 h-4" />
+            Menu
           </button>
         </div>
       </header>
+
+      <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <div className="flex-1 flex flex-col">
         <Routes>
@@ -794,10 +778,10 @@ export default function App() {
           <div className="flex gap-4">
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span className="font-mono text-[10px] uppercase font-bold tracking-wider">Licensed & Insured</span>
+              <span className="font-mono text-xs md:text-[10px] uppercase font-bold tracking-wider">Licensed & Insured</span>
             </div>
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10">
-              <span className="font-mono text-[10px] uppercase font-bold tracking-wider">★ 4.9 on Google</span>
+              <span className="font-mono text-xs md:text-[10px] uppercase font-bold tracking-wider">★ 4.9 on Google</span>
             </div>
           </div>
           <div className="flex gap-3 mt-6">
@@ -813,13 +797,13 @@ export default function App() {
         {/* Service + Service Area Links for SEO */}
         <div className="w-full md:w-auto mb-8 md:mb-0 flex flex-col gap-6">
           <div>
-            <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Services</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <p className="font-mono text-xs md:text-[10px] opacity-40 uppercase tracking-widest mb-3">Services</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-0 md:gap-y-2">
               {SERVICES.map((s) => (
                 <Link
                   key={s.slug}
                   to={`/services/${s.slug}`}
-                  className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
+                  className="font-mono text-sm md:text-xs py-2 md:py-0 opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
                 >
                   {s.name}
                 </Link>
@@ -827,13 +811,13 @@ export default function App() {
             </div>
           </div>
           <div>
-            <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Service Areas</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <p className="font-mono text-xs md:text-[10px] opacity-40 uppercase tracking-widest mb-3">Service Areas</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-0 md:gap-y-2">
               {SERVICE_AREAS.map((area) => (
                 <Link
                   key={area.slug}
                   to={`/towing/${area.slug}`}
-                  className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
+                  className="font-mono text-sm md:text-xs py-2 md:py-0 opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
                 >
                   {area.name}, OR
                 </Link>
@@ -843,9 +827,9 @@ export default function App() {
         </div>
 
         <div className="text-left md:text-right w-full md:w-auto">
-          <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-2 flex items-center gap-2 md:justify-end">
+          <p className="font-mono text-xs md:text-[10px] opacity-40 uppercase tracking-widest mb-2 flex items-center gap-2 md:justify-end">
             <span className="w-2 h-2 rounded-full bg-[var(--orange)] animate-pulse"></span>
-            24/7 Dispatch
+            Open 24/7
           </p>
           <motion.a 
             whileHover={{ scale: 1.05, color: 'var(--orange)' }}
@@ -855,35 +839,27 @@ export default function App() {
           >
             (971) 222-7994
           </motion.a>
-          <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-mono text-[10px] opacity-40 uppercase tracking-widest">
+          <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-mono text-xs md:text-[10px] opacity-40 uppercase tracking-widest">
             <p>© {new Date().getFullYear()} Tow Guys LLC. All rights reserved.</p>
-            <Link to="/privacy" className="hover:text-black/70 dark:hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="py-2 md:py-0 hover:text-black/70 dark:hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </footer>
 
       {/* Mobile Action Bar */}
-      <div className="fixed bottom-0 left-0 w-full z-50 md:hidden p-3 pb-4 bg-[var(--bg)]/90 backdrop-blur-md border-t border-[var(--border)] transition-colors duration-500 flex flex-col gap-2">
-        <p className="text-center font-mono text-[9px] text-[var(--orange)] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--orange)]"></span>
-          </span>
-          Need a tow? Tap to instantly text your location to our dispatch team.
-        </p>
-        <div className="flex gap-3">
-          <a 
-            href="tel:9712227994" 
-            className="flex items-center justify-center p-4 bg-[var(--bg)] text-[var(--fg)] border border-[var(--border)] transition-colors duration-500"
-            aria-label="Call Now"
-          >
-            <Phone className="w-6 h-6" />
-          </a>
-          <OneClickDispatch 
-            isPulse={true} 
-            className="flex-1 py-4 bg-[var(--fg)] text-[var(--bg)] text-lg md:text-xl" 
-          />
-        </div>
+      <div className="fixed bottom-0 left-0 w-full z-50 md:hidden p-3 bg-[var(--bg)]/90 backdrop-blur-md border-t border-[var(--border)] transition-colors duration-500 grid grid-cols-2 gap-3">
+        <a
+          href="tel:9712227994"
+          className="min-h-[60px] rounded-2xl flex items-center justify-center gap-2 bg-[var(--orange)] text-white font-display font-bold uppercase tracking-wider text-lg"
+        >
+          <Phone className="w-5 h-5" />
+          Call
+        </a>
+        <OneClickDispatch
+          isPulse={true}
+          label="Text Location"
+          className="bg-[var(--fg)] text-[var(--bg)] text-base"
+        />
       </div>
     </div>
   );

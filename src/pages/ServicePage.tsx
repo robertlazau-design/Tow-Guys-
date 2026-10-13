@@ -116,8 +116,8 @@ export default function ServicePage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--orange)] opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--orange)]" />
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-white/70 font-bold">
-              24/7 Dispatch — Gresham, OR
+            <span className="font-mono text-xs md:text-[10px] uppercase tracking-widest text-white/70 font-bold">
+              Open 24/7 — Gresham, OR
             </span>
           </div>
 
@@ -131,7 +131,7 @@ export default function ServicePage() {
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <a
               href={PHONE_HREF}
-              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-8 py-5 rounded-2xl font-display font-bold text-lg md:text-xl uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
+              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
             >
               <Phone className="w-6 h-6" />
               Call Now: {PHONE}
