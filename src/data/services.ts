@@ -237,7 +237,7 @@ const SERVICES: ServiceData[] = [
       {
         headline: 'Picking up your vehicle or belongings',
         body:
-          'Bring a valid photo ID, proof of ownership (title or registration) and proof of insurance. Call ahead so we can have everything ready when you arrive.',
+          'Bring a valid photo ID, proof of ownership (title or registration), proof of insurance, and cash — vehicle pickups are cash only. Call ahead so we can have everything ready when you arrive.',
       },
     ],
     faqs: [
@@ -249,7 +249,7 @@ const SERVICES: ServiceData[] = [
       {
         question: 'What do I need to pick up my vehicle?',
         answer:
-          'A valid photo ID, proof of ownership (title or registration) and proof of insurance. Call (971) 222-7994 before you come so we can have it ready.',
+          'A valid photo ID, proof of ownership (title or registration), proof of insurance, and cash — vehicle pickups are cash only. Call (971) 222-7994 before you come so we can have it ready.',
       },
       {
         question: 'Do you work with insurance companies?',
@@ -388,7 +388,7 @@ const SERVICES: ServiceData[] = [
       {
         question: 'My car was towed from private property — where is it?',
         answer:
-          'If Tow Guys towed it, it\'s at our secure yard at 28901 SE Dodge Park Blvd, Gresham, OR 97080. Call (971) 222-7994 and bring a valid photo ID, proof of ownership and proof of insurance.',
+          'If Tow Guys towed it, it\'s at our secure yard at 28901 SE Dodge Park Blvd, Gresham, OR 97080. Call (971) 222-7994 and bring a valid photo ID, proof of ownership, proof of insurance, and cash — vehicle pickups are cash only.',
       },
     ],
     images: [
