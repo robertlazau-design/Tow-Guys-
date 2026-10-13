@@ -1,4 +1,5 @@
-import SERVICE_AREAS from '../src/data/serviceAreas';
+// Node ESM on Vercel needs the extension; TypeScript maps .js to the .ts source.
+import SERVICE_AREAS from '../src/data/serviceAreas.js';
 
 const SITE_URL = 'https://www.towguysgresham.com';
 const SORO_EMBED_URL = 'https://app.trysoro.com/api/embed/bd046227-ac0a-4481-8b04-218d7f8e46d5';
