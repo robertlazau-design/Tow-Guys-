@@ -1,5 +1,6 @@
 // Node ESM on Vercel needs the extension; TypeScript maps .js to the .ts source.
 import SERVICE_AREAS from '../src/data/serviceAreas.js';
+import SERVICES from '../src/data/services.js';
 
 const SITE_URL = 'https://www.towguysgresham.com';
 const SORO_EMBED_URL = 'https://app.trysoro.com/api/embed/bd046227-ac0a-4481-8b04-218d7f8e46d5';
@@ -34,12 +35,18 @@ const escapeXml = (s: string) =>
 export default async function handler(_req: any, res: any) {
   const entries: Entry[] = [
     { loc: `${SITE_URL}/`, changefreq: 'monthly', priority: '1.0' },
+    ...SERVICES.map((s) => ({
+      loc: `${SITE_URL}/services/${s.slug}`,
+      changefreq: 'monthly',
+      priority: '0.9',
+    })),
     ...SERVICE_AREAS.map((c) => ({
       loc: `${SITE_URL}/towing/${c.slug}`,
       changefreq: 'monthly',
       priority: '0.9',
     })),
     { loc: `${SITE_URL}/blog`, changefreq: 'daily', priority: '0.7' },
+    { loc: `${SITE_URL}/privacy`, changefreq: 'yearly', priority: '0.2' },
   ];
 
   try {

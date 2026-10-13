@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ArrowLeft, MessageSquare } from 'lucide-react';
+import { Car, Truck, AlertTriangle, Zap, Siren, SquareParking, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ArrowLeft, MessageSquare } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { track } from '@vercel/analytics';
 import BlogIndex from './pages/BlogIndex';
 import Privacy from './pages/Privacy';
 import ServiceArea from './pages/ServiceArea';
 import SERVICE_AREAS from './data/serviceAreas';
+import SERVICES from './data/services';
+import ServicePage from './pages/ServicePage';
+import Picture from './components/Picture';
 
 // Release authorization isn't live yet; the old upload/signature flow had no
 // working backend, so only the placeholder card ships for now.
@@ -57,6 +61,7 @@ const OneClickDispatch = ({ className = "", isPulse = false }: { className?: str
 
   const handleDispatch = () => {
     if (dispatchState !== 'idle') return;
+    track('Send Location Click', { page: window.location.pathname });
 
     const phoneNumber = "+19712227994";
     const triggerSMS = (mapsLink: string) => {
@@ -167,6 +172,7 @@ const JunkCarQuoteFlow = () => {
   const [details, setDetails] = useState({ year: '', make: '', model: '' });
 
   const handleSMSHandoff = () => {
+    track('Junk Car Quote Click');
     const phoneNumber = "+19712227994";
     const message = `Junk Car Quote Request: ${details.year} ${details.make} ${details.model}. (I am attaching my 3 photos to this text now).`;
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -406,6 +412,17 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
   );
 };
 
+const MotionLink = motion.create(Link);
+
+const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  'emergency-towing': Siren,
+  'flatbed-towing': Truck,
+  'roadside-assistance': Zap,
+  'accident-recovery': AlertTriangle,
+  'junk-car-removal': Car,
+  'private-property-impound': SquareParking,
+};
+
 const HeroGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = Array.from({ length: 13 }, (_, i) => `/gallery/gallery${i + 1}.jpg`);
@@ -420,16 +437,20 @@ const HeroGallery = () => {
   return (
     <div className="absolute inset-0 w-full h-full">
       <AnimatePresence>
-        <motion.img
+        <motion.div
           key={currentIndex}
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 0.7, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
-          src={images[currentIndex]}
-          alt={`Tow Guys Towing and Recovery in Gresham OR - Gallery image ${currentIndex + 1}`}
-          className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700"
-        />
+          className="absolute inset-0 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700"
+        >
+          <Picture
+            src={images[currentIndex]}
+            alt={`Tow Guys Towing and Recovery in Gresham OR - Gallery image ${currentIndex + 1}`}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
       </AnimatePresence>
     </div>
   );
@@ -438,6 +459,12 @@ const HeroGallery = () => {
 const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <>
       <Helmet>
+        <title>Tow Guys | 24/7 Towing & Roadside Assistance in Gresham, OR</title>
+        <meta name="description" content="Need a tow in Gresham, OR? Tow Guys offers 24/7 towing, roadside assistance, accident recovery, private property impounds, and cash for junk cars. Call 971-222-7994." />
+        <meta property="og:title" content="Tow Guys | 24/7 Towing & Roadside Assistance in Gresham, OR" />
+        <meta property="og:description" content="24/7 towing, roadside assistance, accident recovery, and cash for junk cars in Gresham and East Portland. Call 971-222-7994." />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.towguysgresham.com/images/og-share.jpg" />
         <meta property="og:url" content="https://www.towguysgresham.com/" />
         <link rel="canonical" href="https://www.towguysgresham.com/" />
       </Helmet>
@@ -450,9 +477,10 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         <div className="relative flex flex-col overflow-hidden">
           {/* Background Image & Grid Lines */}
           <div className="absolute inset-0 pointer-events-none z-0">
-          <img 
+          <Picture 
             src="/images/hero-bg.jpg" 
             alt="" 
+            loading="eager"
             className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center opacity-30 grayscale mix-blend-luminosity"
           />
           <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6">
@@ -497,13 +525,14 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         {/* Services Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 border-t border-[var(--border)] relative z-10 bg-[var(--bg)] transition-colors duration-500">
           {[
-            { title: "Towing", desc: "24/7, Holiday, Emergency", time: "24:00", icon: Truck },
-            { title: "Roadside", desc: "Jump starts, Lockouts", time: "ASAP", icon: Zap },
-            { title: "Recovery", desc: "Accident towing & storage", time: "SAFE", icon: AlertTriangle },
-            { title: "Junk Cars", desc: "Removal & purchase", time: "CASH", icon: Car }
+            { title: "Towing", desc: "24/7, Holiday, Emergency", time: "24:00", icon: Truck, to: "/services/emergency-towing" },
+            { title: "Roadside", desc: "Jump starts, Lockouts", time: "ASAP", icon: Zap, to: "/services/roadside-assistance" },
+            { title: "Recovery", desc: "Accident towing & storage", time: "SAFE", icon: AlertTriangle, to: "/services/accident-recovery" },
+            { title: "Junk Cars", desc: "Removal & purchase", time: "CASH", icon: Car, to: "/services/junk-car-removal" }
           ].map((s, i) => (
-            <motion.div 
+            <MotionLink 
               key={i} 
+              to={s.to}
               whileHover="hover"
               className="relative p-4 md:p-6 border-r border-b md:border-b-0 border-[var(--border)] last:border-r-0 even:border-r-0 md:even:border-r overflow-hidden group transition-colors duration-500"
             >
@@ -521,7 +550,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
                 <h3 className="font-display font-bold uppercase text-sm md:text-base mb-1">{s.title}</h3>
                 <p className="font-mono text-[10px] md:text-xs opacity-70">{s.desc}</p>
               </div>
-            </motion.div>
+            </MotionLink>
           ))}
         </div>
       </section>
@@ -553,14 +582,10 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            {[
-              { icon: Truck, title: "Towing", desc: "24-hour, holiday, emergency, and classic car towing. We handle your vehicle with the utmost care." },
-              { icon: Zap, title: "Roadside Assistance", desc: "Jump starts, lockouts, and tire changes. Quick response times to get you back on the road." },
-              { icon: AlertTriangle, title: "Accident Recovery", desc: "Professional towing and secure accident vehicle storage. We work with local authorities." },
-              { icon: Car, title: "Junk Car Removal", desc: "Removal and purchase of junk vehicles. Turn your old, unwanted car into cash today." }
-            ].map((s, i) => (
-              <motion.div 
-                key={i} 
+            {SERVICES.map((s) => ({ ...s, icon: SERVICE_ICONS[s.slug] ?? Truck })).map((s) => (
+              <MotionLink 
+                key={s.slug} 
+                to={`/services/${s.slug}`}
                 whileHover={{ x: 10 }}
                 className="flex gap-4 group"
               >
@@ -568,10 +593,10 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
                   <s.icon className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-xl uppercase mb-2 group-hover:text-[var(--blue)] transition-colors">{s.title}</h3>
-                  <p className="font-mono text-sm opacity-70 leading-relaxed max-w-md">{s.desc}</p>
+                  <h3 className="font-display font-bold text-xl uppercase mb-2 group-hover:text-[var(--blue)] transition-colors">{s.name}</h3>
+                  <p className="font-mono text-sm opacity-70 leading-relaxed max-w-md">{s.summary}</p>
                 </div>
-              </motion.div>
+              </MotionLink>
             ))}
           </div>
         </div>
@@ -579,7 +604,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
 
       {/* Reviews Section */}
       <section className="border-b border-[var(--border)] bg-[#0a0a0a] text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('/images/tow4.jpg')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[url('/images/tow4-800.webp')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
         <div className="p-6 md:p-12 max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
             <div>
@@ -749,6 +774,7 @@ export default function App() {
           <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/towing/:city" element={<ServiceArea />} />
+          <Route path="/services/:service" element={<ServicePage />} />
           <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </div>
@@ -784,19 +810,35 @@ export default function App() {
           </div>
         </div>
         
-        {/* Service Area Links for SEO */}
-        <div className="w-full md:w-auto mb-8 md:mb-0">
-          <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Service Areas</p>
-          <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {SERVICE_AREAS.map((area) => (
-              <Link
-                key={area.slug}
-                to={`/towing/${area.slug}`}
-                className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
-              >
-                {area.name}, OR
-              </Link>
-            ))}
+        {/* Service + Service Area Links for SEO */}
+        <div className="w-full md:w-auto mb-8 md:mb-0 flex flex-col gap-6">
+          <div>
+            <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Services</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {SERVICES.map((s) => (
+                <Link
+                  key={s.slug}
+                  to={`/services/${s.slug}`}
+                  className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
+                >
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest mb-3">Service Areas</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {SERVICE_AREAS.map((area) => (
+                <Link
+                  key={area.slug}
+                  to={`/towing/${area.slug}`}
+                  className="font-mono text-xs opacity-60 hover:opacity-100 hover:text-[var(--blue)] transition-all"
+                >
+                  {area.name}, OR
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 

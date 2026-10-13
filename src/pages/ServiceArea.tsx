@@ -3,6 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Phone, MapPin, Truck, Zap, AlertTriangle, Car, ArrowLeft, ChevronDown, Clock, Shield, Star } from 'lucide-react';
 import SERVICE_AREAS, { type CityData } from '../data/serviceAreas';
+import Picture from '../components/Picture';
 
 /* ─── Constants ──────────────────────────────────────────────────────────── */
 
@@ -72,6 +73,17 @@ function buildServiceJsonLd(city: CityData) {
   };
 }
 
+function buildBreadcrumbJsonLd(city: CityData) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: `Towing in ${city.name}, OR`, item: `${SITE_URL}/towing/${city.slug}` },
+    ],
+  };
+}
+
 function buildFAQJsonLd(city: CityData) {
   return {
     '@context': 'https://schema.org',
@@ -115,6 +127,7 @@ export default function ServiceArea() {
         <link rel="canonical" href={`${SITE_URL}/towing/${city.slug}`} />
         <script type="application/ld+json">{JSON.stringify(serviceJsonLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(buildBreadcrumbJsonLd(city))}</script>
       </Helmet>
 
       {/* ── Back Link ─────────────────────────────────────────────────────── */}
@@ -202,29 +215,34 @@ export default function ServiceArea() {
               title: 'Emergency Towing',
               desc: `Fast dispatch to ${city.name} — breakdowns, accidents, and disabled vehicles. No voicemail. No wait.`,
               tag: '24/7',
+              to: '/services/emergency-towing',
             },
             {
               icon: AlertTriangle,
               title: 'Flatbed Towing',
               desc: `Zero-scratch flatbed transport for AWD, lowered, and luxury vehicles in the ${city.name} area.`,
               tag: 'SAFE',
+              to: '/services/flatbed-towing',
             },
             {
               icon: Zap,
               title: 'Roadside Assistance',
               desc: `Jump starts, lockouts, tire changes, and fuel delivery across ${city.name} and surrounding corridors.`,
               tag: 'FAST',
+              to: '/services/roadside-assistance',
             },
             {
               icon: Car,
               title: 'Accident Recovery',
               desc: `Professional accident towing and secure storage. We coordinate with law enforcement in ${city.name}.`,
               tag: 'SECURE',
+              to: '/services/accident-recovery',
             },
           ].map((s, i) => (
-            <div
+            <Link
               key={i}
-              className="p-6 md:p-10 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0 last:border-b-0 group hover:bg-white/[0.03] transition-colors"
+              to={s.to}
+              className="block p-6 md:p-10 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0 last:border-b-0 group hover:bg-white/[0.03] transition-colors"
             >
               <div className="flex justify-between items-center mb-6">
                 <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-[var(--blue)]/20 transition-colors">
@@ -238,7 +256,7 @@ export default function ServiceArea() {
               <p className="font-mono text-sm text-white/60 leading-relaxed">
                 {s.desc}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -249,10 +267,10 @@ export default function ServiceArea() {
           <div className="grid grid-cols-1 md:grid-cols-3">
             {city.galleryImages.map((img, i) => (
               <div key={i} className="relative aspect-[4/3] overflow-hidden group">
-                <img
+                <Picture
                   src={img.src}
                   alt={img.alt}
-                  loading="lazy"
+                  sizes="(min-width: 768px) 33vw, 100vw"
                   className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />

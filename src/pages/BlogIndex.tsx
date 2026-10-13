@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
@@ -7,9 +7,11 @@ const SORO_SCRIPT_ID  = 'soro-embed-script';
 
 export default function BlogIndex() {
   // Soro renders individual posts at /blog?post=<slug> and sets that page's own
-  // title, description and canonical. Only claim them for the listing itself.
+  // title, description, canonical and H1. Only claim them for the listing itself.
+  // Read after mount so the prerendered /blog HTML hydrates without a mismatch.
   const [searchParams] = useSearchParams();
-  const isPostView = searchParams.has('post');
+  const [isPostView, setIsPostView] = useState(false);
+  useEffect(() => setIsPostView(searchParams.has('post')), [searchParams]);
 
   useEffect(() => {
     // Guard: don't inject if already present (e.g. hot-reload)
@@ -38,12 +40,16 @@ export default function BlogIndex() {
             name="description"
             content="Latest towing tips, roadside safety guides, and local driving news from Tow Guys LLC serving Gresham, Troutdale, Portland, and the Mt. Hood Corridor."
           />
+          <meta property="og:title" content="News & Tips | Tow Guys Gresham" />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://www.towguysgresham.com/blog" />
+          <meta property="og:image" content="https://www.towguysgresham.com/images/og-share.jpg" />
           <link rel="canonical" href="https://www.towguysgresham.com/blog" />
         </Helmet>
       )}
 
-      {/* Page header */}
-      <div className="max-w-6xl mx-auto px-4 pt-10 pb-4">
+      {/* Page header (hidden on a post, which brings its own H1) */}
+      <div className={`max-w-6xl mx-auto px-4 pt-10 pb-4 ${isPostView ? 'hidden' : ''}`}>
         <div className="flex items-center gap-2 mb-3">
           <div className="w-3 h-3 bg-[var(--blue)]" />
           <h1 className="font-display font-bold text-4xl md:text-6xl uppercase tracking-tight">
