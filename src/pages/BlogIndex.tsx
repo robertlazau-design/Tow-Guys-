@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 
 const SORO_SCRIPT_SRC = 'https://app.trysoro.com/api/embed/bd046227-ac0a-4481-8b04-218d7f8e46d5';
 const SORO_SCRIPT_ID  = 'soro-embed-script';
 
 export default function BlogIndex() {
+  // Soro renders individual posts at /blog?post=<slug> and sets that page's own
+  // title, description and canonical. Only claim them for the listing itself.
+  const [searchParams] = useSearchParams();
+  const isPostView = searchParams.has('post');
+
   useEffect(() => {
     // Guard: don't inject if already present (e.g. hot-reload)
     if (document.getElementById(SORO_SCRIPT_ID)) return;
@@ -25,14 +31,16 @@ export default function BlogIndex() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
-      <Helmet>
-        <title>News &amp; Tips | Tow Guys Gresham</title>
-        <meta
-          name="description"
-          content="Latest towing tips, roadside safety guides, and local driving news from Tow Guys LLC serving Gresham, Troutdale, Portland, and the Mt. Hood Corridor."
-        />
-        <link rel="canonical" href="https://www.towguysgresham.com/blog" />
-      </Helmet>
+      {!isPostView && (
+        <Helmet>
+          <title>News &amp; Tips | Tow Guys Gresham</title>
+          <meta
+            name="description"
+            content="Latest towing tips, roadside safety guides, and local driving news from Tow Guys LLC serving Gresham, Troutdale, Portland, and the Mt. Hood Corridor."
+          />
+          <link rel="canonical" href="https://www.towguysgresham.com/blog" />
+        </Helmet>
+      )}
 
       {/* Page header */}
       <div className="max-w-6xl mx-auto px-4 pt-10 pb-4">

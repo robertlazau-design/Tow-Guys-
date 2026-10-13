@@ -1,233 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Car, Truck, AlertTriangle, Zap, Power, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, ChevronDown, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ImagePlus, ArrowLeft, Upload, MessageSquare, IdCard, PenTool } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Car, Truck, AlertTriangle, Zap, Phone, MapPin, Loader2, Crosshair, FileSignature, ListChecks, Map, Banknote, X, Instagram, Facebook, Sun, Moon, Camera, CheckCircle2, ArrowLeft, MessageSquare } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import SignatureCanvas from 'react-signature-canvas';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import BlogIndex from './pages/BlogIndex';
-import BlogPost from './pages/BlogPost';
+import Privacy from './pages/Privacy';
 import ServiceArea from './pages/ServiceArea';
 import SERVICE_AREAS from './data/serviceAreas';
 
-const DigitalReleaseForm = () => {
-  const [step, setStep] = useState(0);
-  const [details, setDetails] = useState({ yearMakeModelPlate: '', authorizedPerson: '' });
-  const [idPhoto, setIdPhoto] = useState<string | null>(null);
-  const sigPad = useRef<SignatureCanvas>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setIdPhoto(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const submitForm = async () => {
-    setIsSubmitting(true);
-    setError(null);
-    try {
-      const signatureBase64 = sigPad.current?.getTrimmedCanvas().toDataURL('image/png') || '';
-      
-      const res = await fetch('/api/send-release', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          vehicleDetails: details.yearMakeModelPlate,
-          proxyName: details.authorizedPerson,
-          ownerIdBase64: idPhoto,
-          signatureBase64: signatureBase64
-        })
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to submit release form. Please try again.');
-      }
-      
-      setStep(4); // Success step
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const clearSignature = () => {
-    sigPad.current?.clear();
-  };
-
-  if (step === 0) {
-    return (
-      <motion.div layoutId="digital-release-card" className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg h-full border border-transparent">
-        <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
-          <FileSignature className="w-32 h-32" />
-        </div>
-        <div className="relative z-10 font-sans">
-          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-            <FileSignature className="w-6 h-6 text-white" />
-          </div>
-          <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
-          <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle or belongings</p>
-        </div>
-        <button 
-          disabled
-          className="relative z-10 w-full bg-white/40 text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider opacity-70 cursor-not-allowed shadow-lg">
-          Coming Soon
-        </button>
-      </motion.div>
-    );
-  }
-
-  const isDetailsComplete = details.yearMakeModelPlate && details.authorizedPerson;
-
-  return (
-    <motion.div layoutId="digital-release-card" className="bg-[#1a1a1a] rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden md:col-span-2 shadow-[0_0_40px_rgba(0,102,255,0.1)] border border-[var(--blue)]/30 font-sans min-h-[400px]">
-      <button onClick={() => setStep(0)} className="absolute top-6 left-6 text-white/50 hover:text-white transition-colors z-20 flex items-center gap-2">
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-mono text-xs uppercase tracking-widest hidden sm:block">Cancel</span>
-      </button>
-
-      <div className="w-full max-w-md relative z-10 flex flex-col h-full justify-center">
-        <AnimatePresence mode="wait">
-          
-          {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full mt-8">
-              <div className="text-center mb-4">
-                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
-                  <Car className="w-6 h-6 text-[var(--blue)]" />
-                </div>
-                <h3 className="font-display font-bold text-3xl text-white mb-2">Vehicle & Authorization</h3>
-                <p className="font-mono text-white/60 text-sm">Step 1 of 3</p>
-              </div>
-              <input type="text" placeholder="Year, Make, Model, License Plate" value={details.yearMakeModelPlate} onChange={e => setDetails({...details, yearMakeModelPlate: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--blue)] transition-colors" />
-              <input type="text" placeholder="Pickup Person's Full Legal Name" value={details.authorizedPerson} onChange={e => setDetails({...details, authorizedPerson: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 px-6 text-white text-lg placeholder:text-white/30 focus:outline-none focus:border-[var(--blue)] transition-colors" />
-              <button 
-                disabled={!isDetailsComplete}
-                onClick={() => setStep(2)}
-                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${isDetailsComplete ? 'bg-[var(--blue)] text-white hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20'}`}>
-                Next Step
-              </button>
-            </motion.div>
-          )}
-
-          {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 items-center text-center w-full mt-8">
-              <div className="mb-4">
-                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
-                  <IdCard className="w-6 h-6 text-[var(--blue)]" />
-                </div>
-                <h3 className="font-display font-bold text-3xl text-white mb-2">Owner's Photo ID</h3>
-                <p className="font-mono text-white/60 text-sm">Step 2 of 3</p>
-              </div>
-
-              {idPhoto ? (
-                <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden relative border-2 border-[var(--blue)] shadow-lg bg-black">
-                  <img src={idPhoto} alt="Owner ID Preview" className="w-full h-full object-contain" />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black to-transparent flex justify-center">
-                    <label htmlFor="photo-id" className="cursor-pointer bg-black/50 backdrop-blur px-6 py-3 rounded-full text-white font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-black transition-colors">
-                      <Camera className="w-4 h-4" /> Retake
-                    </label>
-                  </div>
-                </div>
-              ) : (
-                <label htmlFor="photo-id" className="w-full h-20 rounded-2xl bg-[var(--blue)] flex items-center justify-center gap-3 cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all text-white font-bold uppercase tracking-wider text-base md:text-lg">
-                  <Camera className="w-6 h-6" />
-                  Tap to Snap or Upload ID
-                </label>
-              )}
-              
-              <input 
-                id="photo-id"
-                type="file" 
-                accept="image/*" 
-                onChange={handlePhotoCapture}
-                className="hidden" 
-              />
-
-              <button 
-                disabled={!idPhoto}
-                onClick={() => setStep(3)}
-                className={`w-full h-16 rounded-2xl font-bold uppercase tracking-wider transition-all mt-4 ${idPhoto ? 'bg-[var(--blue)] text-white hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20'}`}>
-                Next Step
-              </button>
-            </motion.div>
-          )}
-
-          {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-6 w-full mt-8 text-center">
-              <div>
-                <div className="w-12 h-12 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
-                  <PenTool className="w-6 h-6 text-[var(--blue)]" />
-                </div>
-                <h3 className="font-display font-bold text-3xl text-white mb-2">Signature</h3>
-                <p className="font-mono text-white/60 text-sm">Step 3 of 3</p>
-              </div>
-              
-              <div className="bg-[#2a2a2a] border border-white/20 rounded-2xl overflow-hidden relative">
-                <SignatureCanvas 
-                  ref={sigPad}
-                  penColor="white"
-                  canvasProps={{ className: 'w-full h-48 sm:h-56 signature-canvas cursor-crosshair' }} 
-                />
-                <button onClick={clearSignature} className="absolute top-2 right-2 px-3 py-1 bg-black/40 hover:bg-black/80 rounded backdrop-blur text-white/60 hover:text-white font-mono text-[10px] uppercase tracking-widest transition-colors">
-                  Clear Signature
-                </button>
-              </div>
-
-              <p className="text-white/40 font-mono text-xs text-center max-w-[300px] mx-auto mt-2">
-                By signing, I authorize {details.authorizedPerson} to pick up the vehicle.
-              </p>
-
-              {error && <p className="text-red-400 font-mono text-xs text-center mt-2">{error}</p>}
-
-              <button 
-                onClick={submitForm}
-                disabled={isSubmitting}
-                className="w-full h-16 rounded-2xl bg-[var(--blue)] text-white font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all mt-4 flex items-center justify-center gap-3 disabled:opacity-75 disabled:scale-100 disabled:cursor-not-allowed">
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" /> Sending...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-5 h-5" /> Submit Release
-                  </>
-                )}
-              </button>
-            </motion.div>
-          )}
-
-          {step === 4 && (
-            <motion.div key="step4" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center gap-6 w-full py-8 mt-8">
-              <div className="w-24 h-24 bg-[#00ff88]/20 rounded-full flex items-center justify-center text-[#00ff88] mb-2 shadow-[0_0_30px_rgba(0,255,136,0.3)]">
-                <CheckCircle2 className="w-12 h-12" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-3xl text-white mb-2">Release Authorized!</h3>
-                <p className="font-mono text-white/60 text-sm max-w-[280px] mx-auto">
-                  Your vehicle release has been securely submitted. {details.authorizedPerson} may now pick up the vehicle with their matching ID.
-                </p>
-              </div>
-              <button 
-                onClick={() => setStep(0)}
-                className="w-full h-16 rounded-2xl bg-white/10 text-white font-bold uppercase tracking-wider hover:bg-white/20 transition-all mt-4">
-                Done
-              </button>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
+// Release authorization isn't live yet; the old upload/signature flow had no
+// working backend, so only the placeholder card ships for now.
+const DigitalReleaseForm = () => (
+  <motion.div layoutId="digital-release-card" className="bg-[var(--blue)] rounded-3xl p-6 md:p-8 flex flex-col justify-between gap-8 relative overflow-hidden group shadow-lg h-full border border-transparent">
+    <div className="absolute -right-4 -top-4 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+      <FileSignature className="w-32 h-32" />
+    </div>
+    <div className="relative z-10 font-sans">
+      <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
+        <FileSignature className="w-6 h-6 text-white" />
       </div>
-    </motion.div>
-  );
-};
+      <h4 className="font-display font-bold text-2xl md:text-3xl text-white leading-tight mb-2">Release<br/>Authorization</h4>
+      <p className="font-mono text-sm text-white/80">Authorize someone else to pick up your vehicle or belongings</p>
+    </div>
+    <button 
+      disabled
+      className="relative z-10 w-full bg-white/40 text-[var(--blue)] rounded-full py-4 font-bold text-sm uppercase tracking-wider opacity-70 cursor-not-allowed shadow-lg">
+      Coming Soon
+    </button>
+  </motion.div>
+);
 
 const Marquee = ({ text }: { text: string }) => {
   const content = [...Array(5)].map((_, i) => (
@@ -498,8 +299,8 @@ const RecoveryHub = ({ isDarkMode }: { isDarkMode: boolean }) => {
               Options for picking up, releasing, or selling a vehicle.
             </p>
           </div>
-          <div className="flex items-center gap-4 bg-gray-800 dark:bg-white/15 group-hover:bg-white/20 px-6 py-3 rounded-full border border-transparent dark:border-white/10 transition-all duration-300">
-            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white dark:text-black group-hover:text-white">
+          <div className="flex items-center gap-4 bg-gray-800 dark:bg-white group-hover:bg-white/20 px-6 py-3 rounded-full border border-transparent transition-all duration-300">
+            <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-white dark:text-black dark:group-hover:text-white">
               View Options
             </span>
             <div className="w-8 h-8 bg-white/20 dark:bg-black/20 group-hover:bg-white rounded-full flex items-center justify-center group-hover:text-[var(--blue)] transition-colors">
@@ -640,6 +441,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         <meta property="og:url" content="https://www.towguysgresham.com/" />
         <link rel="canonical" href="https://www.towguysgresham.com/" />
       </Helmet>
+      <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
       <Marquee text="24/7 DISPATCH • FAST RESPONSE • GRESHAM, OR • TOW GUYS" />
 
       {/* Hero Section */}
@@ -703,7 +505,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             <motion.div 
               key={i} 
               whileHover="hover"
-              className="relative p-4 md:p-6 border-r border-b md:border-b-0 border-[var(--border)] last:border-r-0 even:border-r-0 md:even:border-r overflow-hidden group cursor-pointer transition-colors duration-500"
+              className="relative p-4 md:p-6 border-r border-b md:border-b-0 border-[var(--border)] last:border-r-0 even:border-r-0 md:even:border-r overflow-hidden group transition-colors duration-500"
             >
               <motion.div 
                 variants={{ hover: { y: 0 } }}
@@ -760,7 +562,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
               <motion.div 
                 key={i} 
                 whileHover={{ x: 10 }}
-                className="flex gap-4 group cursor-pointer"
+                className="flex gap-4 group"
               >
                 <div className="mt-1 text-[var(--fg)] opacity-40 group-hover:text-[var(--blue)] group-hover:opacity-100 transition-all">
                   <s.icon className="w-8 h-8 md:w-10 md:h-10" />
@@ -777,7 +579,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
 
       {/* Reviews Section */}
       <section className="border-b border-[var(--border)] bg-[#0a0a0a] text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('/images/reviews-bg.jpg')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[url('/images/tow4.jpg')] opacity-5 mix-blend-luminosity bg-cover bg-center pointer-events-none"></div>
         <div className="p-6 md:p-12 max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
             <div>
@@ -808,32 +610,26 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             {[
               {
                 name: "Alex Ziegelmeier",
-                time: "7 months ago",
                 text: "Absolute Professionals!! I got into an accident with my BMW classic car and the tow process was lightning fast and without causing anymore additional damage to the car. Very happy!"
               },
               {
                 name: "Nicole Hansel",
-                time: "6 months ago",
                 text: "Super fast roadside assistance to get my key out of my locked car. I highly recommend them!"
               },
               {
                 name: "Jim Bernard",
-                time: "7 months ago",
                 text: "On time and professional, if you need help or a tow tow guys are the ones to use. Alex picked up my old jag and dropped it off at my mechanics shop. Not often you can have a great experience when you need a car towed."
               },
               {
                 name: "Nikki Harbert",
-                time: "2 months ago",
                 text: "Super helpful, kind, and great communication. They were also easy to reach every time I called."
               },
               {
                 name: "Geobuddy",
-                time: "2 years ago",
                 text: "This company made my day! My car broke down on the way up Mt Hood... I called a couple places and was eventually referred to these guys. When I called, the person who answered was super helpful."
               },
               {
                 name: "Tawny Milton",
-                time: "3 years ago",
                 text: "Very easy, fast and good communication. After dealing with a different tow company for over 4 hours, Tow Guys came to help in 30 minutes. Highly recommend."
               }
             ].map((review, i) => (
@@ -842,10 +638,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--blue)] to-[var(--orange)] flex items-center justify-center font-display font-bold text-lg">
                     {review.name.charAt(0)}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-sm">{review.name}</h4>
-                    <p className="font-mono text-[10px] opacity-50">{review.time}</p>
-                  </div>
+                  <h4 className="font-bold text-sm">{review.name}</h4>
                 </div>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -879,7 +672,6 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-sans flex flex-col pb-24 md:pb-0 transition-colors duration-500 selection:bg-[var(--blue)] selection:text-white ${isDarkMode ? 'dark' : ''}`} style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
-      <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
       {/* Noise Texture Overlay */}
       <div className="pointer-events-none fixed inset-0 z-[100] h-full w-full opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
@@ -887,7 +679,7 @@ export default function App() {
       <header className={`sticky top-0 flex justify-between items-center p-4 md:px-6 border-b border-[var(--border)] relative z-50 backdrop-blur-md transition-colors duration-500 ${isDarkMode ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
         <Link 
           to="/"
-          className="flex items-center gap-3 cursor-pointer" 
+          className="flex items-center gap-3 cursor-pointer shrink-0" 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           tabIndex={0}
@@ -897,12 +689,12 @@ export default function App() {
           <span className="hidden font-display font-bold uppercase tracking-widest text-sm md:text-base">Tow Guys</span>
         </Link>
         
-        <div className="flex items-center gap-4 md:gap-6">
-          <nav className="flex items-center gap-8">
+        <div className="flex items-center gap-3 md:gap-6">
+          <nav className="flex items-center gap-3 md:gap-8">
             <Link
               to="/"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className={`font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+              className={`hidden md:inline font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                 isHome
                   ? (isDarkMode ? 'text-white opacity-100' : 'text-black opacity-100')
                   : (isDarkMode ? 'text-white opacity-60 hover:opacity-100' : 'text-black opacity-60 hover:opacity-100')
@@ -910,7 +702,7 @@ export default function App() {
             >
               Home
             </Link>
-            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
+            <span className={`hidden md:inline font-mono text-xs font-light select-none pointer-events-none ${
               isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
             }`}>|</span>
             <Link
@@ -923,7 +715,7 @@ export default function App() {
             >
               Service Areas
             </Link>
-            <span className={`font-mono text-xs font-light select-none pointer-events-none ${
+            <span className={`hidden md:inline font-mono text-xs font-light select-none pointer-events-none ${
               isDarkMode ? 'text-white opacity-30' : 'text-black opacity-30'
             }`}>|</span>
             <Link
@@ -939,14 +731,15 @@ export default function App() {
           </nav>
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
-              isDarkMode 
-                ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]' 
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            className={`flex items-center gap-2 px-3 md:px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
+              isDarkMode
+                ? 'bg-[var(--orange)] text-white border-[var(--orange)] shadow-[0_0_20px_rgba(255,85,0,0.4)]'
                 : 'bg-[var(--bg)] text-[var(--fg)] border-[var(--border)] hover:bg-[var(--blue)] hover:text-white hover:border-[var(--blue)]'
             }`}
           >
             {isDarkMode ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
-            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            <span className="hidden md:inline">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
         </div>
       </header>
@@ -955,8 +748,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
           <Route path="/blog" element={<BlogIndex />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/towing/:city" element={<ServiceArea />} />
+          <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </div>
 
@@ -978,7 +771,7 @@ export default function App() {
               <span className="font-mono text-[10px] uppercase font-bold tracking-wider">Licensed & Insured</span>
             </div>
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10">
-              <span className="font-mono text-[10px] uppercase font-bold tracking-wider">★ 5-Star Rated</span>
+              <span className="font-mono text-[10px] uppercase font-bold tracking-wider">★ 4.9 on Google</span>
             </div>
           </div>
           <div className="flex gap-3 mt-6">
@@ -1022,10 +815,7 @@ export default function App() {
           </motion.a>
           <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-mono text-[10px] opacity-40 uppercase tracking-widest">
             <p>© {new Date().getFullYear()} Tow Guys LLC. All rights reserved.</p>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-black/70 dark:hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-black/70 dark:hover:text-white transition-colors">Terms of Service</a>
-            </div>
+            <Link to="/privacy" className="hover:text-black/70 dark:hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </footer>

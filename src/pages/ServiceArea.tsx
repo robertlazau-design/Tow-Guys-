@@ -18,134 +18,57 @@ const NAP = {
   zip:     '97080',
   country: 'US',
   phone:   '+1-971-222-7994',
-  email:   'info@towguys.com',
 };
 
 /* ─── JSON-LD builders ───────────────────────────────────────────────────── */
 
-function buildLocalBusinessJsonLd(city: CityData) {
+// The business itself is described once, site-wide, in index.html
+// (@id .../#business). Each city page describes the local service and points
+// back to that entity instead of declaring a second business.
+function buildServiceJsonLd(city: CityData) {
+  const pageUrl = `${SITE_URL}/towing/${city.slug}`;
+  const services = [
+    ['Emergency Towing', `24/7 emergency tow dispatch to ${city.name} and surrounding areas along the ${city.highway} corridor.`],
+    ['Flatbed Towing', 'Flatbed tow truck service for AWD, luxury, classic, and lowered vehicles.'],
+    ['Roadside Assistance', `Jump starts, lockout service, tire changes, and fuel delivery across ${city.name} and the ${city.highway} corridor.`],
+    ['Accident Recovery', `Accident vehicle towing and recovery in ${city.name}, with secure vehicle storage.`],
+  ];
   return {
     '@context': 'https://schema.org',
-    '@type': ['AutoRepair', 'TowingBusiness'],
-    '@id': `${SITE_URL}/towing/${city.slug}#business`,
-    name: NAP.name,
-    alternateName: 'Tow Guys 24HR Roadside',
-    url: `${SITE_URL}/towing/${city.slug}`,
-    telephone: NAP.phone,
-    email: NAP.email,
-    image: `${SITE_URL}/logo.png`,
-    logo: `${SITE_URL}/logo.png`,
-    description: `24/7 emergency towing, flatbed towing, roadside assistance, and accident recovery in ${city.name}, Oregon. Fast dispatch from Tow Guys LLC serving the ${city.highway} corridor.`,
-    priceRange: '$$',
-    currenciesAccepted: 'USD',
-    paymentAccepted: 'Cash, Credit Card, Debit Card',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: NAP.street,
-      addressLocality: NAP.city,
-      addressRegion: NAP.state,
-      postalCode: NAP.zip,
-      addressCountry: NAP.country,
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: city.lat,
-      longitude: city.lng,
-    },
-    hasMap: `https://www.google.com/maps/place/Tow+Guys+24HR+Roadside/@${city.lat},${city.lng},14z`,
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: [
-          'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-          'Friday', 'Saturday', 'Sunday',
-        ],
-        opens: '00:00',
-        closes: '23:59',
-      },
-    ],
-    areaServed: SERVICE_AREAS.map((c) => ({
+    '@type': 'Service',
+    '@id': `${pageUrl}#service`,
+    name: `Towing & Roadside Assistance in ${city.name}, OR`,
+    serviceType: 'Towing',
+    url: pageUrl,
+    provider: { '@id': `${SITE_URL}/#business` },
+    areaServed: {
       '@type': 'City',
-      name: c.name,
-      sameAs: c.wiki,
-      ...(c.postalCodes.length > 0 && {
-        containedInPlace: {
-          '@type': 'AdministrativeArea',
-          name: `${c.name}, OR`,
-        },
-      }),
+      name: city.name,
+      sameAs: city.wiki,
       geo: {
         '@type': 'GeoCircle',
-        geoMidpoint: {
-          '@type': 'GeoCoordinates',
-          latitude: c.lat,
-          longitude: c.lng,
-        },
-        geoRadius: `${c.radiusMi} mi`,
+        geoMidpoint: { '@type': 'GeoCoordinates', latitude: city.lat, longitude: city.lng },
+        geoRadius: `${city.radiusMi} mi`,
       },
-    })),
-    makesOffer: [
-      {
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Service',
-          name: 'Emergency Towing',
-          description: `24/7 emergency tow dispatch to ${city.name} and surrounding areas along the ${city.highway} corridor.`,
-          serviceType: 'Emergency Towing',
-          areaServed: { '@type': 'State', name: 'Oregon' },
-          availableChannel: {
-            '@type': 'ServiceChannel',
-            servicePhone: NAP.phone,
-            availableLanguage: 'English',
-          },
-          hoursAvailable: {
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-            opens: '00:00',
-            closes: '23:59',
-          },
-        },
-      },
-      {
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Service',
-          name: 'Flatbed Towing',
-          description: 'Flatbed tow truck service for AWD, luxury, classic, and lowered vehicles. Zero-scratch transport guaranteed.',
-          serviceType: 'Flatbed Towing',
-        },
-      },
-      {
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Service',
-          name: 'Roadside Assistance',
-          description: `Jump starts, lockout service, tire changes, and fuel delivery across ${city.name} and the ${city.highway} corridor.`,
-          serviceType: 'Roadside Assistance',
-        },
-      },
-      {
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Service',
-          name: 'Accident Recovery',
-          description: `Professional accident vehicle towing and recovery in ${city.name}. Coordination with law enforcement and insurance. Secure vehicle storage available.`,
-          serviceType: 'Accident Recovery and Towing',
-        },
-      },
-    ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      bestRating: '5',
-      ratingCount: '51',
-      reviewCount: '51',
     },
-    sameAs: [
-      'https://www.facebook.com/TowGuysPortland',
-      'https://www.instagram.com/towguysgresham',
-      'https://www.google.com/maps/place/Tow+Guys+24HR+Roadside',
-    ],
+    hoursAvailable: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59',
+    },
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      servicePhone: NAP.phone,
+    },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `Towing services in ${city.name}`,
+      itemListElement: services.map(([name, description]) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name, description },
+      })),
+    },
   };
 }
 
@@ -174,7 +97,7 @@ export default function ServiceArea() {
     return <Navigate to="/" replace />;
   }
 
-  const localBusinessJsonLd = buildLocalBusinessJsonLd(city);
+  const serviceJsonLd = buildServiceJsonLd(city);
   const faqJsonLd = buildFAQJsonLd(city);
   const nearbyData = SERVICE_AREAS.filter((c) => city.nearbyAreas.includes(c.slug));
   const primaryImage = city.galleryImages[0];
@@ -184,14 +107,13 @@ export default function ServiceArea() {
       <Helmet>
         <title>{city.metaTitle}</title>
         <meta name="description" content={city.metaDescription} />
-        <meta name="keywords" content={`towing ${city.name} OR, tow truck ${city.name}, roadside assistance ${city.name}, ${city.highway} towing, emergency tow ${city.name} Oregon, Tow Guys`} />
         <meta property="og:title" content={city.metaTitle} />
         <meta property="og:description" content={city.metaDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${SITE_URL}/towing/${city.slug}`} />
         {primaryImage && <meta property="og:image" content={`${SITE_URL}${primaryImage.src}`} />}
         <link rel="canonical" href={`${SITE_URL}/towing/${city.slug}`} />
-        <script type="application/ld+json">{JSON.stringify(localBusinessJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(serviceJsonLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
       </Helmet>
 

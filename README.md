@@ -1,20 +1,25 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Tow Guys LLC website
 
-# Run and deploy your AI Studio app
+Marketing site for Tow Guys, 24/7 towing and roadside assistance in Gresham, OR —
+live at https://www.towguysgresham.com, deployed on Vercel.
 
-This contains everything you need to run your app locally.
+## Run locally
 
-View your app in AI Studio: https://ai.studio/apps/4b459457-ebb6-496f-b58b-9b21ec846bab
+```bash
+npm install
+npm run dev
+```
 
-## Run Locally
+## Where things live
 
-**Prerequisites:**  Node.js
+- `src/App.tsx` — header, homepage, footer
+- `src/pages/ServiceArea.tsx` + `src/data/serviceAreas.ts` — the `/towing/<city>` pages
+- `src/pages/BlogIndex.tsx` — `/blog`, rendered by the Soro embed (posts at `/blog?post=<slug>`)
+- `src/pages/Privacy.tsx` — `/privacy`
+- `api/sitemap.ts` — serves `/sitemap.xml`, pulling the post list from Soro
+- `vercel.json` — which paths load the app; anything else gets `public/404.html`
 
+## Adding a city page
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Add the city to `src/data/serviceAreas.ts` **and** to the `/towing/:city(...)` list in
+`vercel.json`, otherwise the new page returns a 404.

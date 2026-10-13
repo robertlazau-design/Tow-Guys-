@@ -1,5 +1,31 @@
 {
+  "redirects": [
+    {
+      "source": "/blog/what-to-do-after-a-minor-car-accident-in-gresham",
+      "destination": "/blog",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/towing/:city(gresham|troutdale|wood-village|fairview|boring|sandy|corbett|portland|clackamas)",
+      "destination": "/index.html"
+    }
   ]
 }
