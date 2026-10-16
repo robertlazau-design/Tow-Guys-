@@ -11,6 +11,7 @@
   ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/blog", "has": [{ "type": "query", "key": "post" }], "destination": "/api/blog-post" },
     { "source": "/blog", "destination": "/blog.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/services/:slug", "destination": "/services/:slug.html" },
