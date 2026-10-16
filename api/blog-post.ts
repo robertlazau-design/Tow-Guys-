@@ -79,10 +79,10 @@ function withPostHead(shell: string, a: Article, url: string): string {
     .replace(/<meta property="og:type" content="[^"]*"\s*\/?>/, '<meta property="og:type" content="article"/>')
     .replace(/<meta property="og:url" content="[^"]*"\s*\/?>/, `<meta property="og:url" content="${esc(url)}"/>`)
     .replace(/<meta property="og:image" content="[^"]*"\s*\/?>/, `<meta property="og:image" content="${image}"/>`)
-    .replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${esc(url)}"/>`)
+    .replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${esc(url)}" data-ssr/>`)
     .replace(
       '</head>',
-      `  <meta property="og:description" content="${desc}"/>\n    <script type="application/ld+json">${schema}</script>\n  </head>`,
+      `  <meta property="og:description" content="${desc}"/>\n    <script type="application/ld+json" data-ssr>${schema}</script>\n  </head>`,
     );
 }
 
@@ -115,7 +115,7 @@ export default async function handler(req: any, res: any) {
         (content || `<p>${esc(a.excerpt || '')}</p>`) +
         `<p>Need a tow in Gresham or East County? Call Tow Guys 24/7 at <a href="tel:9712227994">(971) 222-7994</a>.</p>` +
         `</article>` +
-        `<script>document.getElementById('soro-ssr').remove()</script>`;
+        `<script>document.querySelectorAll('#soro-ssr,[data-ssr]').forEach(function(e){e.remove()})</script>`;
       html = withPostHead(shell, a, url).replace('</body>', `${article}\n  </body>`);
     }
   } catch (err) {
