@@ -26,7 +26,10 @@ async function loadShell(host?: string): Promise<string> {
   for (const base of bases) {
     try {
       const r = await fetch(`${base}/blog.html`);
-      if (r.ok) return await r.text();
+      if (!r.ok) continue;
+      const html = await r.text();
+      // Skip anything that isn't our page (e.g. a Vercel login wall on previews).
+      if (html.includes('<div id="root">')) return html;
     } catch {
       // try the next base
     }
