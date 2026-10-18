@@ -412,9 +412,9 @@ const HeroGallery = () => {
 const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <>
       <Helmet>
-        <title>Tow Guys | 24/7 Towing & Roadside Assistance in Gresham, OR</title>
+        <title>Tow Guys 24HR Roadside | 24/7 Towing in Gresham, OR</title>
         <meta name="description" content="Need a tow in Gresham, OR? Tow Guys offers 24/7 towing, roadside assistance, accident recovery, private property impounds, and cash for junk cars. Call 971-222-7994." />
-        <meta property="og:title" content="Tow Guys | 24/7 Towing & Roadside Assistance in Gresham, OR" />
+        <meta property="og:title" content="Tow Guys 24HR Roadside | 24/7 Towing in Gresham, OR" />
         <meta property="og:description" content="24/7 towing, roadside assistance, accident recovery, and cash for junk cars in Gresham and East Portland. Call 971-222-7994." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.towguysgresham.com/images/og-share.jpg" />
