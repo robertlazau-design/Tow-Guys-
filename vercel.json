@@ -2,6 +2,9 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "trailingSlash": false,
+  "functions": {
+    "api/blog-post.ts": { "includeFiles": "dist/blog.html" }
+  },
   "redirects": [
     {
       "source": "/blog/what-to-do-after-a-minor-car-accident-in-gresham",
@@ -11,8 +14,7 @@
   ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/blog", "has": [{ "type": "query", "key": "post" }], "destination": "/api/blog-post" },
-    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/blog", "destination": "/api/blog-post" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/services/:slug", "destination": "/services/:slug.html" },
     { "source": "/towing/:city", "destination": "/towing/:city.html" }

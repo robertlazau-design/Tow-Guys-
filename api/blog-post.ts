@@ -1,12 +1,26 @@
-// Serves /blog?post=<slug> (see the rewrite in vercel.json) as real HTML: the
-// article's own title, description, canonical, share tags, BlogPosting schema
-// and full text. Without this every post URL returned the /blog listing shell,
-// which told search engines "this page is /blog" and had none of the article.
-// In the browser nothing changes: the inline script drops #soro-ssr right away
-// and the Soro embed renders the post as before.
+// Serves /blog and /blog?post=<slug> (see the rewrite in vercel.json) as real HTML.
+//
+// A post gets its own title, description, canonical, share tags, BlogPosting
+// schema and full text, plus links to other recent posts. The listing gets a
+// plain list of every post, so search engines can reach all of them without
+// running Soro's script. A slug Soro doesn't have answers 404.
+//
+// In the browser, src/pages/BlogIndex.tsx moves this server copy into the page,
+// and on a post it skips the Soro embed. The page Google renders is then exactly
+// what the server sent. (Before, an inline script deleted this copy and Soro
+// rebuilt the post client-side; Google ended up seeing no canonical and treated
+// several posts as duplicates, redirects or soft 404s.)
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+
 const SITE_URL = 'https://www.towguysgresham.com';
 const SORO_API = 'https://app.trysoro.com';
 const SORO_TOKEN = 'bd046227-ac0a-4481-8b04-218d7f8e46d5';
+
+// Element ids BlogIndex looks for.
+const SSR_POST_ID = 'soro-ssr';
+const SSR_LIST_ID = 'ssr-posts';
+const MORE_POSTS = 6;
 
 type Article = {
   id: string;
@@ -21,7 +35,17 @@ type Article = {
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+const isShell = (html: string) => html.includes('<div id="root">');
+
 async function loadShell(host?: string): Promise<string> {
+  // The prerendered /blog page ships with this function (includeFiles in
+  // vercel.json), so the HTML always matches this deployment's own scripts.
+  try {
+    const html = await readFile(path.join(process.cwd(), 'dist', 'blog.html'), 'utf8');
+    if (isShell(html)) return html;
+  } catch {
+    // not bundled: fetch it instead
+  }
   const bases = [host ? `https://${host}` : '', SITE_URL].filter(Boolean);
   for (const base of bases) {
     try {
@@ -29,7 +53,7 @@ async function loadShell(host?: string): Promise<string> {
       if (!r.ok) continue;
       const html = await r.text();
       // Skip anything that isn't our page (e.g. a Vercel login wall on previews).
-      if (html.includes('<div id="root">')) return html;
+      if (isShell(html)) return html;
     } catch {
       // try the next base
     }
@@ -42,7 +66,9 @@ async function loadArticles(): Promise<Article[]> {
   if (!r.ok) throw new Error(`Soro embed returned ${r.status}`);
   const js = await r.text();
   const m = js.match(/var SORO_ARTICLES = (\[[\s\S]*?\]);\n/);
-  return m ? (JSON.parse(m[1]) as Article[]) : [];
+  const list = m ? (JSON.parse(m[1]) as Article[]) : [];
+  // Newest first.
+  return list.sort((a, b) => String(b.isoDate || '').localeCompare(String(a.isoDate || '')));
 }
 
 async function loadContent(id: string): Promise<string> {
@@ -54,6 +80,9 @@ async function loadContent(id: string): Promise<string> {
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/\son[a-z]+="[^"]*"/gi, '');
 }
+
+const postUrl = (slug: string) => `${SITE_URL}/blog?post=${slug}`;
+const postLink = (a: Article) => `<a href="/blog?post=${esc(a.slug)}">${esc(a.title)}</a>`;
 
 function withPostHead(shell: string, a: Article, url: string): string {
   const title = esc(`${a.title} | Tow Guys Gresham`);
@@ -79,11 +108,43 @@ function withPostHead(shell: string, a: Article, url: string): string {
     .replace(/<meta property="og:type" content="[^"]*"\s*\/?>/, '<meta property="og:type" content="article"/>')
     .replace(/<meta property="og:url" content="[^"]*"\s*\/?>/, `<meta property="og:url" content="${esc(url)}"/>`)
     .replace(/<meta property="og:image" content="[^"]*"\s*\/?>/, `<meta property="og:image" content="${image}"/>`)
-    .replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${esc(url)}" data-ssr/>`)
+    .replace(/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${esc(url)}"/>`)
     .replace(
       '</head>',
-      `  <meta property="og:description" content="${desc}"/>\n    <script type="application/ld+json" data-ssr>${schema}</script>\n  </head>`,
+      `  <meta property="og:description" content="${desc}"/>\n    <script type="application/ld+json">${schema}</script>\n  </head>`,
     );
+}
+
+function postHtml(a: Article, content: string, more: Article[]): string {
+  const img = a.image
+    ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" width="1200" height="630" loading="eager">`
+    : '';
+  const moreHtml = more.length
+    ? `<section><h2>More towing tips</h2><ul>${more.map((m) => `<li>${postLink(m)}</li>`).join('')}</ul></section>`
+    : '';
+  return (
+    `<article id="${SSR_POST_ID}" data-slug="${esc(a.slug)}">` +
+    `<p><a href="/blog">&larr; All news &amp; tips</a></p>` +
+    `<h1>${esc(a.title)}</h1>` +
+    (a.date ? `<p><time datetime="${esc(a.isoDate || '')}">${esc(a.date)}</time></p>` : '') +
+    img +
+    (content || `<p>${esc(a.excerpt || '')}</p>`) +
+    `<p>Need a tow in Gresham or East County? Call Tow Guys 24/7 at <a href="tel:9712227994">(971) 222-7994</a>.</p>` +
+    moreHtml +
+    `</article>`
+  );
+}
+
+function listHtml(articles: Article[]): string {
+  const items = articles
+    .map(
+      (a) =>
+        `<li>${postLink(a)}` +
+        (a.date ? ` <time datetime="${esc(a.isoDate || '')}">${esc(a.date)}</time>` : '') +
+        `</li>`,
+    )
+    .join('');
+  return `<nav id="${SSR_LIST_ID}" aria-label="Every post"><h2>Every post</h2><ul>${items}</ul></nav>`;
 }
 
 export default async function handler(req: any, res: any) {
@@ -98,32 +159,30 @@ export default async function handler(req: any, res: any) {
   }
 
   let html = shell;
+  let status = 200;
   try {
-    const a = /^[a-z0-9-]+$/.test(slug) ? (await loadArticles()).find((x) => x.slug === slug) : undefined;
-    if (a) {
-      const url = `${SITE_URL}/blog?post=${a.slug}`;
-      const content = await loadContent(a.id);
-      const img = a.image
-        ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" width="1200" height="630" loading="eager">`
-        : '';
-      const article =
-        `<article id="soro-ssr" class="max-w-3xl mx-auto px-4 py-12">` +
-        `<p><a href="/blog">&larr; All news &amp; tips</a></p>` +
-        `<h1>${esc(a.title)}</h1>` +
-        (a.date ? `<p><time datetime="${esc(a.isoDate || '')}">${esc(a.date)}</time></p>` : '') +
-        img +
-        (content || `<p>${esc(a.excerpt || '')}</p>`) +
-        `<p>Need a tow in Gresham or East County? Call Tow Guys 24/7 at <a href="tel:9712227994">(971) 222-7994</a>.</p>` +
-        `</article>` +
-        `<script>document.querySelectorAll('#soro-ssr,[data-ssr]').forEach(function(e){e.remove()})</script>`;
-      html = withPostHead(shell, a, url).replace('</body>', `${article}\n  </body>`);
+    const articles = await loadArticles();
+    if (!slug) {
+      if (articles.length) html = shell.replace('</body>', `${listHtml(articles)}\n  </body>`);
+    } else {
+      const a = /^[a-z0-9-]+$/.test(slug) ? articles.find((x) => x.slug === slug) : undefined;
+      if (a) {
+        const url = postUrl(a.slug);
+        const more = articles.filter((x) => x.slug !== a.slug).slice(0, MORE_POSTS);
+        const article = postHtml(a, await loadContent(a.id), more);
+        html = withPostHead(shell, a, url).replace('</body>', `${article}\n  </body>`);
+      } else if (articles.length) {
+        // Not a post Soro has: answer 404 so this URL isn't indexed as the listing.
+        status = 404;
+        html = shell.replace('</head>', '  <meta name="robots" content="noindex"/>\n  </head>');
+      }
     }
   } catch (err) {
     // Fall back to the plain listing shell if Soro is unreachable.
-    console.error('blog-post render failed:', err);
+    console.error('blog render failed:', err);
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-  res.status(200).send(html);
+  res.status(status).send(html);
 }
