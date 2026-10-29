@@ -170,7 +170,10 @@ export default async function handler(req: any, res: any) {
         const url = postUrl(a.slug);
         const more = articles.filter((x) => x.slug !== a.slug).slice(0, MORE_POSTS);
         const article = postHtml(a, await loadContent(a.id), more);
-        html = withPostHead(shell, a, url).replace('</body>', `${article}\n  </body>`);
+        html = withPostHead(shell, a, url)
+          // One H1 per page: the post's title. BlogIndex renders this heading as a <p> on a post too.
+          .replace(/<h1( class="[^"]*")>(\s*News &amp; Tips\s*)<\/h1>/, '<p$1>$2</p>')
+          .replace('</body>', `${article}\n  </body>`);
       } else if (articles.length) {
         // Not a post Soro has: answer 404 so this URL isn't indexed as the listing.
         status = 404;
