@@ -27,6 +27,9 @@ export default function BlogIndex() {
   // The header's look is set after mount so the prerendered /blog HTML
   // hydrates without a mismatch.
   const [isPostView, setIsPostView] = useState(false);
+  // On a post the server sends this heading as a <p> (the post has its own H1),
+  // so render the same tag here to match it.
+  const Heading = post ? 'p' : 'h1';
   useEffect(() => setIsPostView(Boolean(post)), [post]);
 
   const postSlot = useRef<HTMLDivElement>(null);
@@ -73,9 +76,9 @@ export default function BlogIndex() {
       <div className={`max-w-6xl mx-auto px-4 pt-10 pb-4 ${isPostView ? 'hidden' : ''}`}>
         <div className="flex items-center gap-2 mb-3">
           <div className="w-3 h-3 bg-[var(--blue)]" />
-          <h1 className="font-display font-bold text-4xl md:text-6xl uppercase tracking-tight">
+          <Heading className="font-display font-bold text-4xl md:text-6xl uppercase tracking-tight">
             News &amp; Tips
-          </h1>
+          </Heading>
         </div>
         <p className="font-mono text-sm opacity-70 max-w-2xl">
           Stay informed with the latest updates, safety tips, and guides from our

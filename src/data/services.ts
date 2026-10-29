@@ -92,9 +92,9 @@ const SERVICES: ServiceData[] = [
     slug: 'flatbed-towing',
     name: 'Flatbed Towing',
     serviceType: 'Flatbed Towing',
-    metaTitle: 'Flatbed Towing in Gresham, OR | AWD, Classic & Motorcycle | Tow Guys',
+    metaTitle: 'Flatbed Towing in Gresham, OR | AWD & Classics | Tow Guys',
     metaDescription:
-      'Flatbed towing in Gresham and East Portland for AWD vehicles, classics, lowered cars, motorcycles and small equipment. All four wheels off the ground. Call 971-222-7994.',
+      'Flatbed towing in Gresham and East Portland for AWD vehicles, classics, lowered cars, motorcycles and small equipment. Call 971-222-7994.',
     headline: 'Flatbed Towing in Gresham, OR',
     intro:
       'A flatbed carries your whole vehicle with all four wheels off the road — the safest way to move all-wheel-drive vehicles, classics, lowered cars, motorcycles and anything that can\'t roll.',
@@ -151,7 +151,7 @@ const SERVICES: ServiceData[] = [
     slug: 'roadside-assistance',
     name: 'Roadside Assistance',
     serviceType: 'Roadside Assistance',
-    metaTitle: 'Roadside Assistance in Gresham, OR | Jump Starts, Lockouts & Fuel | Tow Guys',
+    metaTitle: 'Roadside Assistance in Gresham, OR | Jump Starts | Tow Guys',
     metaDescription:
       'Dead battery, locked out, flat tire or out of gas in Gresham or East Portland? Tow Guys roadside assistance is available 24/7. Call 971-222-7994.',
     headline: 'Roadside Assistance in Gresham, OR',
@@ -209,9 +209,9 @@ const SERVICES: ServiceData[] = [
     slug: 'accident-recovery',
     name: 'Accident Recovery',
     serviceType: 'Accident Recovery and Towing',
-    metaTitle: 'Accident Towing & Recovery in Gresham, OR | Secure Storage | Tow Guys',
+    metaTitle: 'Accident Towing & Recovery in Gresham, OR | Tow Guys',
     metaDescription:
-      'Accident towing and vehicle recovery in Gresham, Troutdale and East Portland. We work with police and insurance and store vehicles in our secure yard. Call 971-222-7994.',
+      'Accident towing and recovery in Gresham, Troutdale and East Portland. We work with police and insurance and store vehicles securely. Call 971-222-7994.',
     headline: 'Accident Towing & Recovery in Gresham, OR',
     intro:
       'After a crash, you need the scene cleared safely and your vehicle somewhere secure. Tow Guys recovers damaged vehicles from roads, ditches and embankments and works alongside local police at the scene.',
@@ -269,7 +269,7 @@ const SERVICES: ServiceData[] = [
     serviceType: 'Junk Car Removal',
     metaTitle: 'Cash for Junk Cars in Gresham, OR | Free Removal | Tow Guys',
     metaDescription:
-      'Sell your junk, broken or unwanted car for cash in Gresham and East Portland. Text 3 photos for a quote and we\'ll tow it away. Call or text 971-222-7994.',
+      'Sell your junk or unwanted car for cash in Gresham and East Portland. Text 3 photos for a quote and we\'ll tow it away. Call or text 971-222-7994.',
     headline: 'Cash for Junk Cars in Gresham, OR',
     intro:
       'Got a car that doesn\'t run, failed inspection or is just taking up space? Tow Guys buys junk and unwanted vehicles and tows them away — no need to get it running first.',
@@ -326,9 +326,9 @@ const SERVICES: ServiceData[] = [
     slug: 'private-property-impound',
     name: 'Private Property Impound',
     serviceType: 'Private Property Impound Towing',
-    metaTitle: 'Private Property Towing & Parking Enforcement in Gresham, OR | Tow Guys',
+    metaTitle: 'Private Property & Impound Towing in Gresham, OR | Tow Guys',
     metaDescription:
-      'Private property impound towing for apartments, HOAs, shopping centers and businesses in Gresham and East Portland. No cost to the property owner. Call 971-222-7994.',
+      'Private property impound towing for apartments, HOAs, shopping centers and businesses in Gresham. No cost to the property owner. Call 971-222-7994.',
     headline: 'Private Property Impound Towing in Gresham, OR',
     intro:
       'Take back control of your parking. Tow Guys removes abandoned, unauthorized and illegally parked vehicles from private property — and it costs the property nothing. The vehicle owner pays for the tow and storage.',

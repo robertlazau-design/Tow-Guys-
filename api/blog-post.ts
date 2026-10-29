@@ -12,6 +12,9 @@
 // several posts as duplicates, redirects or soft 404s.)
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+// Node ESM on Vercel needs the extension; TypeScript maps .js to the .ts source.
+import SERVICE_AREAS from '../src/data/serviceAreas.js';
+import SERVICES from '../src/data/services.js';
 
 const SITE_URL = 'https://www.towguysgresham.com';
 const SORO_API = 'https://app.trysoro.com';
@@ -76,10 +79,38 @@ async function loadContent(id: string): Promise<string> {
   if (!r.ok) return '';
   const data = await r.json();
   // Soro's own HTML; drop anything executable just in case.
-  return String(data?.content || '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/\son[a-z]+="[^"]*"/gi, '');
+  return fixLinks(
+    String(data?.content || '')
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/\son[a-z]+="[^"]*"/gi, ''),
+  );
 }
+
+// Soro sometimes links to pages this site doesn't have (e.g. /services).
+// Links to our own domain become relative; a path we don't serve goes to the
+// service page its link text names, or the homepage.
+const KNOWN_PATHS = new Set([
+  '/',
+  '/blog',
+  '/privacy',
+  ...SERVICES.map((s) => `/services/${s.slug}`),
+  ...SERVICE_AREAS.map((c) => `/towing/${c.slug}`),
+]);
+
+function fixPath(href: string, text: string): string {
+  const [pathname, query = ''] = href.split('?');
+  const p = pathname.replace(/\/+$/, '') || '/';
+  if (KNOWN_PATHS.has(p)) return query ? `${p}?${query}` : p;
+  const t = text.replace(/<[^>]*>/g, '').toLowerCase();
+  const s = SERVICES.find((x) => t.includes(x.name.toLowerCase()) || t.includes(x.slug.replace(/-/g, ' ')));
+  return s ? `/services/${s.slug}` : '/';
+}
+
+const fixLinks = (html: string) =>
+  html.replace(
+    /<a(\s[^>]*?)?\shref="https?:\/\/(?:www\.)?towguysgresham\.com(\/[^"]*)?"([^>]*)>([\s\S]*?)<\/a>/gi,
+    (_m, pre = '', href = '/', post, text) => `<a${pre} href="${fixPath(href, text)}"${post}>${text}</a>`,
+  );
 
 const postUrl = (slug: string) => `${SITE_URL}/blog?post=${slug}`;
 const postLink = (a: Article) => `<a href="/blog?post=${esc(a.slug)}">${esc(a.title)}</a>`;
@@ -170,7 +201,10 @@ export default async function handler(req: any, res: any) {
         const url = postUrl(a.slug);
         const more = articles.filter((x) => x.slug !== a.slug).slice(0, MORE_POSTS);
         const article = postHtml(a, await loadContent(a.id), more);
-        html = withPostHead(shell, a, url).replace('</body>', `${article}\n  </body>`);
+        html = withPostHead(shell, a, url)
+          // One H1 per page: the post's title. BlogIndex renders this heading as a <p> on a post too.
+          .replace(/<h1( class="[^"]*")>(\s*News &amp; Tips\s*)<\/h1>/, '<p$1>$2</p>')
+          .replace('</body>', `${article}\n  </body>`);
       } else if (articles.length) {
         // Not a post Soro has: answer 404 so this URL isn't indexed as the listing.
         status = 404;
