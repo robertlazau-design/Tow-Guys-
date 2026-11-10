@@ -5,6 +5,7 @@ import { Phone, MapPin, ArrowLeft, ChevronDown, Check } from 'lucide-react';
 import SERVICES, { type ServiceData } from '../data/services';
 import SERVICE_AREAS from '../data/serviceAreas';
 import Picture from '../components/Picture';
+import { MagneticLink } from '../effects';
 
 const PHONE      = '(971) 222-7994';
 const PHONE_HREF = 'tel:9712227994';
@@ -129,13 +130,13 @@ export default function ServicePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <a
+            <MagneticLink
               href={PHONE_HREF}
-              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
+              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-[scale] shadow-[0_0_40px_rgba(255,85,0,0.3)]"
             >
               <Phone className="w-6 h-6" />
               Call Now: {PHONE}
-            </a>
+            </MagneticLink>
           </div>
         </div>
       </section>
