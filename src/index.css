@@ -177,3 +177,140 @@ body {
   color: #7ab3ff !important;
   text-decoration-color: #7ab3ff !important;
 }
+
+/* ─── Golden Boy motion kit, Tow Guys edition (src/effects.tsx) ──────────────
+   Same rules as RobertLazau.com: only transform/opacity (plus paint-only
+   touches), text always in the prerendered HTML, a finished state for
+   "reduce motion", mouse-only effects behind a fine pointer. */
+:root {
+  --tg-ease-cut: cubic-bezier(0.76, 0, 0.24, 1);      /* things that open or close, like a shutter */
+  --tg-glint: #0055ff;
+}
+.dark {
+  --tg-glint: #7ab3ff;
+}
+
+/* The phone number catches the light once after the page loads. It's readable
+   from the first frame; only its color moves. Desktop: each digit glints in
+   turn (--i is its position). Phones: one sweep across the whole number. */
+.tg-glint {
+  animation: tg-glint 0.9s var(--tg-ease-cut) calc(0.8s + var(--i, 0) * 60ms) 1;
+}
+@keyframes tg-glint {
+  45% { color: var(--tg-glint); }
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .tg-sweep-text {
+    background-image: linear-gradient(105deg, var(--fg) 0%, var(--fg) 42%, var(--tg-glint) 50%, var(--fg) 58%, var(--fg) 100%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: tg-sweep 1.4s var(--tg-ease-cut) 0.8s 1 both;
+  }
+}
+@keyframes tg-sweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+@media (forced-colors: active) {
+  .tg-sweep-text {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}
+
+/* Widescreen bars meet in the middle, then slide away top and bottom the first
+   time the Gresham photo band scrolls into view (Letterbox). */
+.tg-letterbox {
+  position: relative;
+  overflow: hidden;
+}
+.tg-letterbox-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  z-index: 3;
+  background: #0a0a0a;
+  pointer-events: none;
+  transform: scaleY(0);
+}
+.tg-letterbox-top { top: 0; transform-origin: top; }
+.tg-letterbox-bottom { bottom: 0; transform-origin: bottom; }
+.tg-letterbox-armed .tg-letterbox-bar { transform: scaleY(1); }
+.tg-letterbox-open .tg-letterbox-bar {
+  transform: scaleY(0);
+  transition: transform 1.25s var(--tg-ease-cut) 0.1s;
+}
+/* a thin blue seam where the bars meet */
+.tg-letterbox-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 85, 255, 0.7), transparent);
+}
+
+/* Cards: a soft light (and a brighter edge) follows the mouse. --gx/--gy come
+   from usePageEffects. Blue on the dark review cards; white on the service
+   tiles, above the blue fill they get on hover. Mouse only. */
+.tg-glow {
+  position: relative;
+  isolation: isolate;
+  --tg-glow-fill: rgba(0, 85, 255, 0.16);
+  --tg-glow-edge: rgba(91, 159, 255, 0.75);
+}
+.tg-glow::before,
+.tg-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.tg-glow::before {
+  z-index: -1;
+  background: radial-gradient(380px circle at var(--gx, 50%) var(--gy, 50%), var(--tg-glow-fill), transparent 45%);
+}
+.tg-glow::after {
+  z-index: 2;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 50%), var(--tg-glow-edge), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.tg-glow-on-fill {
+  --tg-glow-fill: rgba(255, 255, 255, 0.18);
+  --tg-glow-edge: rgba(255, 255, 255, 0.6);
+}
+.tg-glow-on-fill::before {
+  z-index: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tg-glow:hover::before,
+  .tg-glow:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-glint,
+  .tg-sweep-text {
+    animation: none;
+  }
+  .tg-letterbox-bar {
+    display: none;
+  }
+  .tg-glow::before,
+  .tg-glow::after {
+    transition: none;
+  }
+}

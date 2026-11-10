@@ -12,6 +12,7 @@ import SERVICES from './data/services';
 import ServicePage from './pages/ServicePage';
 import Picture from './components/Picture';
 import MobileMenu from './components/MobileMenu';
+import { Letterbox, MagneticLink, usePageEffects } from './effects';
 
 const Marquee = ({ text }: { text: string }) => {
   // Scroll only on larger screens, and never for people who've asked their
@@ -125,7 +126,7 @@ const PhoneNumber = () => {
       aria-label="Call Tow Guys at (971) 222-7994"
       className="block w-full md:cursor-crosshair"
     >
-      <span className="md:hidden block font-display font-bold text-[11vw] leading-none tracking-tight whitespace-nowrap">
+      <span className="tg-sweep-text md:hidden block font-display font-bold text-[11vw] leading-none tracking-tight whitespace-nowrap">
         (971) 222-7994
       </span>
       <span className="md:hidden flex items-center gap-2 mt-3 font-mono text-sm font-bold uppercase tracking-widest text-[var(--blue)]">
@@ -134,6 +135,8 @@ const PhoneNumber = () => {
       <span className="hidden md:flex justify-between items-baseline font-display font-bold md:text-[14vw] lg:text-[11vw] xl:text-[12vw] leading-[0.8] tracking-tighter uppercase w-full">
       {number.split('').map((char, i) => {
         const isColon = char === ':';
+        // position among the digits, so the glint runs evenly left to right
+        const digit = number.slice(0, i).replace(/:/g, '').length;
         const hoverColorClass = isColon ? '' : (i % 2 === 0 ? 'hover:text-[var(--blue)]' : 'hover:text-[var(--orange)]');
         const baseColorClass = isColon ? 'text-[var(--fg)] opacity-20' : 'text-[var(--fg)]';
         
@@ -144,7 +147,8 @@ const PhoneNumber = () => {
               y: isColon ? 0 : -20, 
               scale: isColon ? 1 : 1.1
             }}
-            className={`transition-all duration-200 inline-block ${baseColorClass} ${hoverColorClass}`}
+            className={`transition-all duration-200 inline-block ${baseColorClass} ${hoverColorClass} ${isColon ? '' : 'tg-glint'}`}
+            style={isColon ? undefined : ({ '--i': digit } as React.CSSProperties)}
           >
             {char}
           </motion.span>
@@ -462,13 +466,13 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
               Need a tow? Call us 24/7 — a real person answers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-start">
-              <a 
+              <MagneticLink 
                 href="tel:9712227994" 
                 className="min-h-[60px] rounded-2xl flex items-center justify-center gap-3 bg-[var(--blue)] text-white px-8 py-4 text-lg font-display font-bold uppercase tracking-wider hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none transition-colors"
               >
                 <Phone className="w-5 h-5" />
                 Call Now
-              </a>
+              </MagneticLink>
               {/* Texting a location only works from a phone */}
               <div className="[@media(pointer:fine)]:hidden flex flex-col gap-2">
                 <OneClickDispatch className={`px-8 py-4 text-lg active:translate-y-1 ${isDarkMode ? 'bg-[#1a1a1a] text-white border border-white/20' : 'bg-white text-black border border-black/20 shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)]'}`} />
@@ -504,7 +508,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
               key={i} 
               to={s.to}
               whileHover="hover"
-              className="relative p-4 md:p-6 border-r border-b md:border-b-0 border-[var(--border)] last:border-r-0 even:border-r-0 md:even:border-r overflow-hidden group transition-colors duration-500"
+              className="tg-glow tg-glow-on-fill relative p-4 md:p-6 border-r border-b md:border-b-0 border-[var(--border)] last:border-r-0 even:border-r-0 md:even:border-r overflow-hidden group transition-colors duration-500"
             >
               <motion.div 
                 variants={{ hover: { y: 0 } }}
@@ -526,7 +530,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
       </section>
 
       {/* Main Image Section */}
-      <section className="relative h-[50vh] md:h-[70vh] border-b border-[var(--border)] bg-black overflow-hidden group">
+      <Letterbox as="section" className="relative h-[50vh] md:h-[70vh] border-b border-[var(--border)] bg-black overflow-hidden group">
         <HeroGallery />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
         
@@ -541,7 +545,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             <span>Gresham, OR 97080</span>
           </div>
         </div>
-      </section>
+      </Letterbox>
 
       {/* Detailed Services */}
       <section className="border-b border-[var(--border)]">
@@ -631,7 +635,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
                 text: "Very easy, fast and good communication. After dealing with a different tow company for over 4 hours, Tow Guys came to help in 30 minutes. Highly recommend."
               }
             ].map((review, i) => (
-              <div key={i} className="bg-[#111] border border-white/10 p-6 rounded-2xl flex flex-col gap-4 hover:border-white/30 transition-colors">
+              <div key={i} className="tg-glow bg-[#111] border border-white/10 p-6 rounded-2xl flex flex-col gap-4 hover:border-white/30 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--blue)] to-[var(--orange)] flex items-center justify-center font-display font-bold text-lg">
                     {review.name.charAt(0)}
@@ -665,6 +669,7 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  usePageEffects();
 
   useEffect(() => setIsMenuOpen(false), [location.pathname]);
   const isHome = location.pathname === '/';
