@@ -420,6 +420,8 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
         <meta property="og:image" content="https://www.towguysgresham.com/images/og-share.jpg" />
         <meta property="og:url" content="https://www.towguysgresham.com/" />
         <link rel="canonical" href="https://www.towguysgresham.com/" />
+        {/* The hero photo is the largest thing on a phone screen: fetch it first. */}
+        <link rel="preload" as="image" type="image/webp" imageSrcSet="/images/hero-bg-800.webp 800w, /images/hero-bg-1600.webp 1600w" imageSizes="100vw" fetchPriority="high" />
       </Helmet>
       <h1 className="sr-only">Tow Guys - 24/7 Towing, Roadside Assistance & Cash for Junk Cars in Gresham, OR</h1>
       <Marquee text="OPEN 24/7 • CALL (971) 222-7994 • GRESHAM, OR • TOW GUYS" />
@@ -434,6 +436,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             src="/images/hero-bg.jpg" 
             alt="" 
             loading="eager"
+            fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center opacity-30 grayscale mix-blend-luminosity"
           />
           <div className="absolute inset-0 grid grid-cols-4 md:grid-cols-6">
