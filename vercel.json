@@ -20,6 +20,18 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "tow-guys.vercel.app" }],
+      "destination": "https://www.towguysgresham.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "tow-guys.vercel.app" }],
+      "destination": "https://www.towguysgresham.com/:path*",
+      "permanent": true
+    },
+    {
       "source": "/blog/what-to-do-after-a-minor-car-accident-in-gresham",
       "destination": "/blog",
       "permanent": true

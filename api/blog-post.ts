@@ -113,6 +113,18 @@ const fixLinks = (html: string) =>
   );
 
 const postUrl = (slug: string) => `${SITE_URL}/blog?post=${slug}`;
+
+// Every post links to a town page: the town its title or slug names, otherwise
+// Gresham, the home base. Search Console showed Google unsure which page is the
+// Gresham page (Nov 2026), and the posts had no links to the town pages at all.
+const HOME_AREA = SERVICE_AREAS.find((c) => c.slug === 'gresham') ?? SERVICE_AREAS[0];
+function areaFor(a: Article) {
+  const hay = `${a.title} ${a.slug}`.toLowerCase();
+  return (
+    SERVICE_AREAS.find((c) => c !== HOME_AREA && (hay.includes(c.name.toLowerCase()) || hay.includes(c.slug))) ??
+    HOME_AREA
+  );
+}
 const postLink = (a: Article) => `<a href="/blog?post=${esc(a.slug)}">${esc(a.title)}</a>`;
 
 function withPostHead(shell: string, a: Article, url: string): string {
@@ -147,6 +159,7 @@ function withPostHead(shell: string, a: Article, url: string): string {
 }
 
 function postHtml(a: Article, content: string, more: Article[]): string {
+  const area = areaFor(a);
   const img = a.image
     ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" width="1200" height="630" loading="eager">`
     : '';
@@ -160,7 +173,7 @@ function postHtml(a: Article, content: string, more: Article[]): string {
     (a.date ? `<p><time datetime="${esc(a.isoDate || '')}">${esc(a.date)}</time></p>` : '') +
     img +
     (content || `<p>${esc(a.excerpt || '')}</p>`) +
-    `<p>Need a tow in Gresham or East County? Call Tow Guys 24/7 at <a href="tel:9712227994">(971) 222-7994</a>.</p>` +
+    `<p>Need a tow truck in ${esc(area.name)}? See <a href="/towing/${esc(area.slug)}">${esc(area.name)} towing</a> or call Tow Guys 24/7 at <a href="tel:9712227994">(971) 222-7994</a>.</p>` +
     moreHtml +
     `</article>`
   );
