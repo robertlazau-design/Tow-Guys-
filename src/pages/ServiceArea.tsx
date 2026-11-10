@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Phone, MapPin, Truck, Zap, AlertTriangle, Car, ArrowLeft, ChevronDown, Clock, Shield, Star } from 'lucide-react';
 import SERVICE_AREAS, { type CityData } from '../data/serviceAreas';
 import Picture from '../components/Picture';
+import { MagneticLink } from '../effects';
 
 /* ─── Constants ──────────────────────────────────────────────────────────── */
 
@@ -184,14 +185,14 @@ export default function ServiceArea() {
 
           {/* Primary CTA */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <a
+            <MagneticLink
               href={PHONE_HREF}
               id={`cta-call-${city.slug}`}
-              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,85,0,0.3)]"
+              className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-[scale] shadow-[0_0_40px_rgba(255,85,0,0.3)]"
             >
               <Phone className="w-6 h-6" />
               Call Now: {PHONE}
-            </a>
+            </MagneticLink>
             <a
               href={`https://maps.google.com/?q=${NAP.street},+${NAP.city},+${NAP.state}+${NAP.zip}`}
               target="_blank"
