@@ -187,6 +187,7 @@ export default function ServiceArea() {
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <MagneticLink
               href={PHONE_HREF}
+              data-spot="hero"
               id={`cta-call-${city.slug}`}
               className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-6 sm:px-8 py-5 rounded-2xl font-display font-bold text-base sm:text-lg md:text-xl whitespace-nowrap uppercase tracking-wider hover:scale-105 active:scale-95 transition-[scale] shadow-[0_0_40px_rgba(255,85,0,0.3)]"
             >
@@ -435,6 +436,7 @@ export default function ServiceArea() {
 
           <a
             href={PHONE_HREF}
+            data-spot="bottom"
             id={`cta-bottom-call-${city.slug}`}
             className="inline-flex items-center justify-center gap-3 bg-[var(--orange)] text-white px-10 py-6 rounded-2xl font-display font-bold text-xl md:text-2xl uppercase tracking-wider hover:scale-105 active:scale-95 transition-transform shadow-[0_0_60px_rgba(255,85,0,0.3)]"
           >
