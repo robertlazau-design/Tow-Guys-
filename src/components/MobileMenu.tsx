@@ -83,6 +83,7 @@ export default function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClo
           <div className="p-4 border-t border-white/10">
             <a
               href="tel:9712227994"
+              data-spot="menu"
               className="min-h-[60px] rounded-2xl flex items-center justify-center gap-3 bg-[var(--orange)] text-white font-display font-bold uppercase tracking-wider text-lg"
             >
               <Phone className="w-5 h-5" />

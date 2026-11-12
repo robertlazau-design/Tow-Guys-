@@ -123,6 +123,7 @@ const PhoneNumber = () => {
   return (
     <a
       href="tel:9712227994"
+      data-spot="big-number"
       aria-label="Call Tow Guys at (971) 222-7994"
       className="block w-full md:cursor-crosshair"
     >
@@ -164,7 +165,7 @@ const JunkCarQuoteFlow = () => {
   const [details, setDetails] = useState({ year: '', make: '', model: '' });
 
   const handleSMSHandoff = () => {
-    track('Junk Car Quote Click');
+    track('Junk Car Quote Click', { page: window.location.pathname });
     const phoneNumber = "+19712227994";
     const message = `Junk Car Quote Request: ${details.year} ${details.make} ${details.model}. (I am attaching my 3 photos to this text now).`;
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -468,6 +469,7 @@ const Home = ({ isDarkMode }: { isDarkMode: boolean }) => (
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-start">
               <MagneticLink 
                 href="tel:9712227994" 
+                data-spot="hero"
                 className="min-h-[60px] rounded-2xl flex items-center justify-center gap-3 bg-[var(--blue)] text-white px-8 py-4 text-lg font-display font-bold uppercase tracking-wider hover:bg-[var(--orange)] border border-transparent hover:border-[var(--orange)] shadow-[4px_4px_0px_0px_rgba(10,10,10,0.15)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] active:translate-y-1 active:shadow-none transition-colors"
               >
                 <Phone className="w-5 h-5" />
@@ -855,7 +857,7 @@ export default function App() {
       </footer>
 
       {/* Mobile Action Bar */}
-      <div className="fixed bottom-0 left-0 w-full z-50 md:hidden p-3 bg-[var(--bg)]/90 backdrop-blur-md border-t border-[var(--border)] transition-colors duration-500 grid grid-cols-2 gap-3">
+      <div data-spot="mobile-bar" className="fixed bottom-0 left-0 w-full z-50 md:hidden p-3 bg-[var(--bg)]/90 backdrop-blur-md border-t border-[var(--border)] transition-colors duration-500 grid grid-cols-2 gap-3">
         <a
           href="tel:9712227994"
           className="min-h-[60px] rounded-2xl flex items-center justify-center gap-2 bg-[var(--orange)] text-white font-display font-bold uppercase tracking-wider text-lg"

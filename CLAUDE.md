@@ -49,3 +49,11 @@ The website for Tow Guys 24HR Roadside, a 24/7 towing company in Gresham, Oregon
 | `Letterbox` | Home: the "Gresham, Oregon" photo band | Widescreen bars open the first time it scrolls into view. If the band already peeks into the first screen on load, it stays as is. |
 | `MagneticLink` | "Call Now" buttons: home hero, service pages, town pages | The button leans toward the cursor. |
 | `usePageEffects` + `.tg-glow` | Home: the four service tiles and the review cards | A soft light follows the mouse: white on the tiles (over their blue hover fill), blue on the review cards. |
+
+## Lead events and Speed Insights
+
+- `src/leadEvents.ts` counts leads as Vercel Web Analytics custom events (Pro plan): `Call Click`, `Text Click`, `Email Click` and `Directions Click`, from one click listener started in `src/main.tsx`. `App.tsx` also sends `Send Location Click` and `Junk Car Quote Click`.
+- Each event has two properties at most (Pro's limit): `page` and `spot`. `spot` comes from the nearest `data-spot` attribute (`big-number`, `hero`, `bottom`, `mobile-bar`, `menu`), else `header`, `footer`, the section id, or `page`. Give a new call button a `data-spot` if you want it counted on its own.
+- Never put names, phone numbers, plates or message text in an event.
+- Speed Insights (`<SpeedInsights />` in `src/main.tsx`) records real visitors' load speed. It has to be switched on for the project in Vercel too.
+

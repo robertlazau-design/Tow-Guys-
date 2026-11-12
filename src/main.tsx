@@ -3,7 +3,8 @@ import {createRoot, hydrateRoot} from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
-import { track } from '@vercel/analytics';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { startLeadEvents } from './leadEvents';
 import App from './App.tsx';
 import './index.css';
 
@@ -13,6 +14,7 @@ const app = (
       <BrowserRouter>
         <App />
         <Analytics />
+        <SpeedInsights />
       </BrowserRouter>
     </HelmetProvider>
   </StrictMode>
@@ -27,8 +29,5 @@ if (root.hasChildNodes()) {
   createRoot(root).render(app);
 }
 
-// Count phone-call taps from any page, so we can see which pages bring in calls.
-document.addEventListener('click', (e) => {
-  const link = (e.target as Element | null)?.closest?.('a[href^="tel:"]');
-  if (link) track('Call Click', { page: window.location.pathname });
-});
+// Count call, text, email and directions taps from any page (see leadEvents.ts).
+startLeadEvents();
