@@ -15,6 +15,7 @@ The website for Tow Guys 24HR Roadside, a 24/7 towing company in Gresham, Oregon
 - Vite, React 19 and Tailwind CSS 4, hosted on Vercel (project `tow-guys`).
 - Pages are prerendered to static HTML by `scripts/prerender.mjs`. `npm run build` builds and prerenders. `npm run lint` type-checks.
 - Blog posts come from Soro and are served as real HTML by `api/blog-post.ts` (`/blog` and `/blog?post=<slug>`). The sitemap is `api/sitemap.ts`.
+- **IndexNow:** `.github/workflows/indexnow.yml` runs `scripts/indexnow.py`. After a merge to main that changes the site, it waits for Vercel's deploy of that commit, checks the key file is live and sends the site's pages from the live sitemap to IndexNow (Bing and the others that use it), leaving out blog posts. Every day at 14:23 UTC it sends blog posts dated yesterday or today, since Soro publishes them without a code change. Run it by hand from the Actions tab (tick "all" to send every page). The key is `public/3e63cf9b6ead0a02b8cf43e3b229f5d1.txt` and is public by design: it only proves the site owns the submissions. GitHub pauses scheduled runs after 60 days without repo activity; turn it back on from the Actions tab. Google doesn't use IndexNow; it reads the sitemap.
 
 | File | What's in it |
 | --- | --- |
